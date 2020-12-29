@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Name Game</string>
+
+    <string name="mainMenuInstructions">Try matching the WillowTree "\n" Employee to their photo</string>
+    <string name="practiceModeBtnTxt">Practice Mode</string>
+    <string name="timedModeBtnTxt">Timed Mode</string>
 </resources>
