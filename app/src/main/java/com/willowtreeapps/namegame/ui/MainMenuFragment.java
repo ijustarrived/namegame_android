@@ -48,7 +48,7 @@ public class MainMenuFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                ModeClicked(GameplayDef.Mode.PRACTICE);
+                ReplaceModeFragment(GameplayDef.Mode.PRACTICE, context);
             }
         });
 
@@ -57,12 +57,12 @@ public class MainMenuFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                ModeClicked(GameplayDef.Mode.TIMED);
+                ReplaceModeFragment(GameplayDef.Mode.TIMED, context);
             }
         });
     }
 
-    private void ModeClicked( @GameplayDef.Mode int mode)
+    private void ReplaceModeFragment( @GameplayDef.Mode int mode, Context context)
     {
         final Bundle ARGS = new Bundle();
 
