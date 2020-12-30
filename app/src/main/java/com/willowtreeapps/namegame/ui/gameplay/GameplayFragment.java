@@ -80,19 +80,17 @@ public class GameplayFragment extends Fragment
 
         //endregion
 
-        final TextView TOOLBAR_TXT = view.findViewById(R.id.gameplayToolbarText);
-
         switch (mode)
         {
             case GameplayDef.Mode.PRACTICE:
 
-                TOOLBAR_TXT.setText(currentActivity.getResources().getText(R.string.practiceModeBtnTxt));
+                TOOLBAR.setTitle(currentActivity.getResources().getText(R.string.practiceModeBtnTxt));
 
                 break;
 
             case GameplayDef.Mode.TIMED:
 
-                TOOLBAR_TXT.setText(currentActivity.getResources().getText(R.string.timedModeBtnTxt));
+                TOOLBAR.setTitle(currentActivity.getResources().getText(R.string.timedModeBtnTxt));
 
                 break;
 

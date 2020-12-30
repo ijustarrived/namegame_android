@@ -14,7 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:maxLines="2"
         android:text="@string/mainMenuInstructions"
         android:textColor="@color/offWhite"
         android:textSize="18sp"

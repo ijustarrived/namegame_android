@@ -21,8 +21,7 @@
         app:layout_constraintStart_toStartOf="@+id/practiceModeBtn"
         android:layout_marginBottom="20dp"
         android:textSize="18sp"
-        android:gravity="center"
-        android:maxLines="2"/>
+        android:gravity="center"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/practiceModeBtn"

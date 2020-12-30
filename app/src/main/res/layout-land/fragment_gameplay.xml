@@ -7,180 +7,188 @@
     android:orientation="vertical"
     tools:context=".ui.gameplay.GameplayFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/gameplayToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="?attr/actionBarSize"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/gameplayToolbarText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textColor="@color/offWhite"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
+    <include
+        android:id="@+id/gameplayToolbar"
+        layout="@layout/toolbar" />
 
     <TextView
         android:id="@+id/employeeName"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
         android:layout_marginTop="45dp"
-        android:text="Jose Mireles"
         android:contentDescription="@string/employeeNameDescTxt"
+        android:text="Jose Mireles"
         android:textColor="@color/darkGray"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBar"
-        android:layout_marginStart="45dp"
-        android:maxLines="7"/>
+        app:layout_constraintTop_toBottomOf="@+id/gameplayToolbar" />
 
-    <ImageView
-        android:id="@+id/employeeImage"
+    <!--1-->
+    <FrameLayout
+        android:id="@+id/frame1"
         android:layout_width="164dp"
         android:layout_height="164dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/employeeImage3"
-        app:layout_constraintEnd_toStartOf="@+id/employeeImage2"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toTopOf="@+id/frame3"
+        app:layout_constraintEnd_toStartOf="@+id/frame2"
+        app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/employeeName"
-        app:layout_constraintVertical_bias="0.15"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/face_ic_dark"
-        android:contentDescription="@string/employeeImage1DescTxt" />
+        app:layout_constraintStart_toEndOf="@+id/employeeName"
+        app:layout_constraintTop_toBottomOf="@+id/gameplayToolbar"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_chainStyle="packed">
 
-    <View
-        android:id="@+id/resultView1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/employeeImage"
-        app:layout_constraintStart_toStartOf="@+id/employeeImage"
-        app:layout_constraintTop_toTopOf="@+id/employeeImage"
-        app:layout_constraintEnd_toEndOf="@id/employeeImage"/>
+        <ImageView
+            android:id="@+id/employeeImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/employeeImage1DescTxt"
+            app:srcCompat="@drawable/face_ic_dark" />
 
-    <ImageView
-        android:id="@+id/employeeImage2"
+        <View
+            android:id="@+id/resultView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+    <!--2-->
+    <FrameLayout
+        android:id="@+id/frame2"
         android:layout_width="164dp"
         android:layout_height="164dp"
-        android:layout_marginTop="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/employeeImage4"
+        app:layout_constraintBottom_toTopOf="@+id/frame4"
+        app:layout_constraintEnd_toStartOf="@+id/frame5"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/frame1"
+        app:layout_constraintTop_toBottomOf="@+id/gameplayToolbar"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <ImageView
+            android:id="@+id/employeeImage2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/employeeImage2DescTxt"
+            app:layout_constraintVertical_bias="0.15"
+            app:srcCompat="@drawable/face_ic_dark" />
+
+        <View
+            android:id="@+id/resultView2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+    <!--5-->
+    <FrameLayout
+        android:id="@+id/frame5"
+        android:layout_width="164dp"
+        android:layout_height="164dp"
+        app:layout_constraintBottom_toTopOf="@+id/frame6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/employeeImage"
-        app:layout_constraintTop_toBottomOf="@+id/employeeName"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/face_ic_dark"
-        app:layout_constraintVertical_bias="0.15"
-        android:contentDescription="@string/employeeImage2DescTxt" />
+        app:layout_constraintStart_toEndOf="@+id/frame2"
+        app:layout_constraintTop_toBottomOf="@+id/gameplayToolbar"
+        app:layout_constraintVertical_chainStyle="packed">
 
-    <View
-        android:id="@+id/resultView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/employeeImage2"
-        app:layout_constraintStart_toStartOf="@+id/employeeImage2"
-        app:layout_constraintTop_toTopOf="@+id/employeeImage2"
-        app:layout_constraintEnd_toEndOf="@id/employeeImage2"/>
+        <ImageView
+            android:id="@+id/employeeImage5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/employeeImage5DescTxt"
+            app:srcCompat="@drawable/face_ic_dark" />
 
-    <ImageView
-        android:id="@+id/employeeImage3"
+        <View
+            android:id="@+id/resultView5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+
+<!--Row 2-->
+
+    <!--3-->
+    <FrameLayout
+        android:id="@+id/frame3"
         android:layout_width="164dp"
         android:layout_height="164dp"
-        android:layout_marginTop="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/employeeImage5"
-        app:layout_constraintStart_toStartOf="@+id/employeeImage"
-        app:layout_constraintTop_toBottomOf="@+id/employeeImage"
-        app:srcCompat="@drawable/face_ic_dark"
-        android:contentDescription="@string/employeeImage3DescTxt"/>
-
-    <View
-        android:id="@+id/resultView3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/employeeImage3"
-        app:layout_constraintStart_toStartOf="@+id/employeeImage3"
-        app:layout_constraintTop_toTopOf="@+id/employeeImage3"
-        app:layout_constraintEnd_toEndOf="@id/employeeImage3"/>
-
-    <ImageView
-        android:id="@+id/employeeImage4"
-        android:layout_width="164dp"
-        android:layout_height="164dp"
-        android:layout_marginTop="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/employeeImage6"
-        app:layout_constraintEnd_toEndOf="@id/employeeImage2"
-        app:layout_constraintTop_toBottomOf="@+id/employeeImage2"
-        app:srcCompat="@drawable/face_ic_dark"
-        android:contentDescription="@string/employeeImage4DescTxt"/>
-
-    <View
-        android:id="@+id/resultView4"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/employeeImage4"
-        app:layout_constraintStart_toStartOf="@+id/employeeImage4"
-        app:layout_constraintTop_toTopOf="@+id/employeeImage4"
-        app:layout_constraintEnd_toEndOf="@id/employeeImage4"/>
-
-    <ImageView
-        android:id="@+id/employeeImage5"
-        android:layout_width="164dp"
-        android:layout_height="164dp"
-        android:layout_marginTop="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/employeeImage3"
-        app:layout_constraintTop_toBottomOf="@+id/employeeImage3"
-        app:srcCompat="@drawable/face_ic_dark"
-        android:contentDescription="@string/employeeImage5DescTxt"/>
+        app:layout_constraintEnd_toStartOf="@+id/frame4"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@+id/frame1"
+        app:layout_constraintStart_toEndOf="@+id/employeeName">
 
-    <View
-        android:id="@+id/resultView5"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/employeeImage5"
-        app:layout_constraintStart_toStartOf="@+id/employeeImage5"
-        app:layout_constraintTop_toTopOf="@+id/employeeImage5"
-        app:layout_constraintEnd_toEndOf="@id/employeeImage5"/>
+        <ImageView
+            android:id="@+id/employeeImage3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/employeeImage3DescTxt"
+            app:srcCompat="@drawable/face_ic_dark" />
 
-    <ImageView
-        android:id="@+id/employeeImage6"
+        <View
+            android:id="@+id/resultView3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/employeeImage3"
+            app:layout_constraintEnd_toEndOf="@id/employeeImage3"
+            app:layout_constraintStart_toStartOf="@+id/employeeImage3"
+            app:layout_constraintTop_toTopOf="@+id/employeeImage3" />
+
+    </FrameLayout>
+
+    <!--4-->
+    <FrameLayout
+        android:id="@+id/frame4"
         android:layout_width="164dp"
         android:layout_height="164dp"
-        android:layout_marginTop="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/employeeImage4"
-        app:layout_constraintTop_toBottomOf="@+id/employeeImage4"
-        app:srcCompat="@drawable/face_ic_dark"
-        android:contentDescription="@string/employeeImage6DescTxt"/>
+        app:layout_constraintEnd_toStartOf="@+id/frame6"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/frame3"
+        app:layout_constraintTop_toBottomOf="@+id/frame2"
+        app:layout_constraintVertical_chainStyle="packed">
 
-    <View
-        android:id="@+id/resultView6"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/employeeImage6"
-        app:layout_constraintStart_toStartOf="@+id/employeeImage6"
-        app:layout_constraintTop_toTopOf="@+id/employeeImage6"
-        app:layout_constraintEnd_toEndOf="@id/employeeImage6"/>
+        <ImageView
+            android:id="@+id/employeeImage4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/employeeImage4DescTxt"
+            app:srcCompat="@drawable/face_ic_dark" />
+
+        <View
+            android:id="@+id/resultView4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+
+    <!--6-->
+    <FrameLayout
+        android:id="@+id/frame6"
+        android:layout_width="164dp"
+        android:layout_height="164dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/frame4"
+        app:layout_constraintTop_toBottomOf="@+id/frame5">
+
+        <ImageView
+            android:id="@+id/employeeImage6"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/employeeImage6DescTxt"
+            app:srcCompat="@drawable/face_ic_dark" />
+
+        <View
+            android:id="@+id/resultView6"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.willowtreeapps.namegame.util.FragHelper;
 
 import android.content.pm.ActivityInfo;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.rule.ActivityTestRule;
 
@@ -17,6 +18,7 @@ import org.junit.Test;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -61,9 +63,16 @@ public class FragHelperTest
     @Test
     public void ReplaceActivityWithMainMenuFragmentTest()
     {
-        NameGameApplication.get(activity).GetFrag().Replace(R.id.fragmentContainer, MainMenuFragment.newInstance(), MainMenuFragment.TAG, false);
+        NameGameApplication.get(activity)
+                .GetFrag()
+                .Replace(R.id.fragmentContainer, MainMenuFragment.newInstance(), MainMenuFragment.TAG, false);
 
-        onView(withText(activity.getBaseContext().getResources().getText(R.string.practiceModeBtnTxt).toString())).check(matches(isDisplayed()));
+        onView(withText
+                       (
+                               activity.getBaseContext()
+                                       .getResources()
+                                       .getText(R.string.practiceModeBtnTxt).toString()
+                       )).check(matches(isDisplayed()));
     }
 
     @Test
@@ -71,7 +80,16 @@ public class FragHelperTest
     {
         onView(withId(R.id.practiceModeBtn)).perform(click());
 
-        onView(withId(R.id.gameplayToolbarText)).check(matches(withText(R.string.practiceModeBtnTxt)));
+        onView(withId(R.id.gameplayToolbar)).check
+                (
+                        matches
+                                (
+                                        hasDescendant
+                                                (
+                                                        withText(R.string.practiceModeBtnTxt)
+                                                )
+                                )
+                );
     }
 
     @Test
@@ -79,6 +97,15 @@ public class FragHelperTest
     {
         onView(withId(R.id.timedModeBtn)).perform(click());
 
-        onView(withId(R.id.gameplayToolbarText)).check(matches(withText(R.string.timedModeBtnTxt)));
+        onView(withId(R.id.gameplayToolbar)).check
+                (
+                        matches
+                                (
+                                        hasDescendant
+                                                (
+                                                        withText(R.string.timedModeBtnTxt)
+                                                )
+                                )
+                );
     }
 }
