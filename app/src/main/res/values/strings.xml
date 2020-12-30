@@ -6,4 +6,11 @@
     <string name="timedModeBtnTxt">Timed Mode</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="employeeNameDescTxt">Employee name</string>
+    <string name="employeeImage1DescTxt">Employee image 1</string>
+    <string name="employeeImage2DescTxt">Employee image 2</string>
+    <string name="employeeImage3DescTxt">Employee image 3</string>
+    <string name="employeeImage4DescTxt">Employee image 4</string>
+    <string name="employeeImage5DescTxt">Employee image 5</string>
+    <string name="employeeImage6DescTxt">Employee image 6</string>
 </resources>

@@ -3,7 +3,6 @@ package com.willowtreeapps.namegame.ui;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.willowtreeapps.namegame.MainMenuFragment;
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.core.NameGameApplication;
 import com.willowtreeapps.namegame.util.FragHelper.FragHelper;

@@ -16,16 +16,16 @@
         android:layout_height="wrap_content"
         android:text="@string/mainMenuInstructions"
         android:textColor="@color/offWhite"
-        app:layout_constraintBottom_toTopOf="@+id/materialButton"
-        app:layout_constraintEnd_toEndOf="@+id/materialButton"
-        app:layout_constraintStart_toStartOf="@+id/materialButton"
+        app:layout_constraintBottom_toTopOf="@+id/practiceModeBtn"
+        app:layout_constraintEnd_toEndOf="@+id/practiceModeBtn"
+        app:layout_constraintStart_toStartOf="@+id/practiceModeBtn"
         android:layout_marginBottom="20dp"
         android:textSize="18sp"
         android:gravity="center"
         android:maxLines="2"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/materialButton"
+        android:id="@+id/practiceModeBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/practiceModeBtnTxt"
