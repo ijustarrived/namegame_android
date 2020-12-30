@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.willowtreeapps.namegame.network.NetworkModule;
+import com.willowtreeapps.namegame.util.FragHelper.FragHelper;
 
 public class NameGameApplication extends Application {
 
@@ -12,6 +13,18 @@ public class NameGameApplication extends Application {
 
     public static NameGameApplication get(@NonNull Context context) {
         return (NameGameApplication) context.getApplicationContext();
+    }
+
+    private FragHelper frag;
+
+    public FragHelper GetFrag()
+    {
+        return frag;
+    }
+
+    public void SetFrag(FragHelper frag)
+    {
+        this.frag = frag;
     }
 
     @Override
