@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.gameplay.GameplayFragment">
+    tools:context=".Gameplay.GameplayFragment">
 
     <include
         android:id="@+id/gameplayToolbar"

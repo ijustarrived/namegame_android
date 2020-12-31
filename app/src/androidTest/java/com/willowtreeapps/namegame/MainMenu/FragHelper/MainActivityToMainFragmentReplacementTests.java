@@ -1,13 +1,13 @@
-package com.willowtreeapps.namegame.MainActivity.FragHelper;
+package com.willowtreeapps.namegame.MainMenu.FragHelper;
 
 import android.content.pm.ActivityInfo;
 
 import androidx.test.rule.ActivityTestRule;
 
 import com.willowtreeapps.namegame.core.NameGameApplication;
-import com.willowtreeapps.namegame.ui.MainMenuFragment;
+import com.willowtreeapps.namegame.MainMenu.MainMenuFragment;
 import com.willowtreeapps.namegame.R;
-import com.willowtreeapps.namegame.MainActivity.MainActivity;
+import com.willowtreeapps.namegame.MainMenu.MainActivity;
 
 import org.junit.Before;
 import org.junit.Rule;

@@ -1,4 +1,4 @@
-package com.willowtreeapps.namegame.MainActivity.FragHelper;
+package com.willowtreeapps.namegame.MainMenu.FragHelper;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;

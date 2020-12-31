@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.willowtreeapps.namegame.network.NetworkModule;
-import com.willowtreeapps.namegame.MainActivity.FragHelper.FragHelper;
+import com.willowtreeapps.namegame.MainMenu.FragHelper.FragHelper;
 
 public class NameGameApplication extends Application {
 

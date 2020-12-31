@@ -1,7 +1,7 @@
 package com.willowtreeapps.namegame.core;
 
 import com.willowtreeapps.namegame.network.NetworkModule;
-import com.willowtreeapps.namegame.MainActivity.MainActivity;
+import com.willowtreeapps.namegame.MainMenu.MainActivity;
 
 import javax.inject.Singleton;
 

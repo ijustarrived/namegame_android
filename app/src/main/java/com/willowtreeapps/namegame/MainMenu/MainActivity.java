@@ -1,4 +1,4 @@
-package com.willowtreeapps.namegame.MainActivity;
+package com.willowtreeapps.namegame.MainMenu;
 
 import android.os.Bundle;
 
@@ -7,8 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.core.NameGameApplication;
-import com.willowtreeapps.namegame.ui.MainMenuFragment;
-import com.willowtreeapps.namegame.MainActivity.FragHelper.FragHelper;
+import com.willowtreeapps.namegame.MainMenu.FragHelper.FragHelper;
 
 public class MainActivity extends AppCompatActivity {
 

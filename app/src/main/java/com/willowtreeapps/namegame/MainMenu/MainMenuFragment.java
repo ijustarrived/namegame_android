@@ -1,4 +1,4 @@
-package com.willowtreeapps.namegame.ui;
+package com.willowtreeapps.namegame.MainMenu;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.core.NameGameApplication;
-import com.willowtreeapps.namegame.ui.gameplay.GameplayDef;
-import com.willowtreeapps.namegame.ui.gameplay.GameplayFragment;
+import com.willowtreeapps.namegame.Gameplay.GameplayDef;
+import com.willowtreeapps.namegame.Gameplay.GameplayFragment;
 
 public class MainMenuFragment extends Fragment
 {

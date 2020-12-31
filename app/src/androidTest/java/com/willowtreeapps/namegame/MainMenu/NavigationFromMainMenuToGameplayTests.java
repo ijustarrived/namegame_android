@@ -1,4 +1,4 @@
-package com.willowtreeapps.namegame.MainActivity;
+package com.willowtreeapps.namegame.MainMenu;
 
 import android.content.pm.ActivityInfo;
 
