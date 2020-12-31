@@ -1,7 +1,7 @@
 package com.willowtreeapps.namegame.core;
 
 import com.willowtreeapps.namegame.network.NetworkModule;
-import com.willowtreeapps.namegame.ui.NameGameActivity;
+import com.willowtreeapps.namegame.MainActivity.MainActivity;
 
 import javax.inject.Singleton;
 
@@ -13,5 +13,5 @@ import dagger.Component;
         NetworkModule.class
 })
 public interface ApplicationComponent {
-    void inject(NameGameActivity activity);
+    void inject(MainActivity activity);
 }

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_landscape"
     android:paddingEnd="@dimen/mainMenuPaddingLandscape"
-    tools:context=".ui.NameGameActivity">
+    tools:context=".MainActivity.MainActivity">
 
     <TextView
         android:id="@+id/textView"

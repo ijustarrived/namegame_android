@@ -1,16 +1,11 @@
-package com.willowtreeapps.namegame.ui;
+package com.willowtreeapps.namegame.MainActivity;
 
 import android.content.pm.ActivityInfo;
-import android.os.Handler;
-import android.view.View;
 
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.ViewInteraction;
 import androidx.test.rule.ActivityTestRule;
 
 import com.willowtreeapps.namegame.R;
 
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,12 +17,13 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+//If you run them all, some of the landscape and back to portrait test might fail because the thread sleep needs a bit more time
 public class NavigationFromMainMenuToGameplayTests
 {
     @Rule
-    public ActivityTestRule<NameGameActivity> activityActivityTestRule = new ActivityTestRule<>(NameGameActivity.class);
+    public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-    private NameGameActivity activity;
+    private MainActivity activity;
 
     @Before
     public void Init()

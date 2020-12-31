@@ -1,4 +1,4 @@
-package com.willowtreeapps.namegame.ui;
+package com.willowtreeapps.namegame.MainActivity;
 
 import android.os.Bundle;
 
@@ -7,9 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.core.NameGameApplication;
-import com.willowtreeapps.namegame.util.FragHelper.FragHelper;
+import com.willowtreeapps.namegame.ui.MainMenuFragment;
+import com.willowtreeapps.namegame.MainActivity.FragHelper.FragHelper;
 
-public class NameGameActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

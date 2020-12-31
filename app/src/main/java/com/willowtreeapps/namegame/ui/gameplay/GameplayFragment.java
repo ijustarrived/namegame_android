@@ -66,38 +66,38 @@ public class GameplayFragment extends Fragment
 
         //region Extract arguments
 
-            final Bundle ARGS = getArguments();
+        final Bundle ARGS = getArguments();
 
-            int mode = 0;
+        int mode = 0;
 
-            if (ARGS != null)
-            {
-                if (ARGS.containsKey(MainMenuFragment.MODE_TAG))
-                    mode = ARGS.getInt(MainMenuFragment.MODE_TAG);
-            }
+        if (ARGS != null)
+        {
+            if (ARGS.containsKey(MainMenuFragment.MODE_TAG))
+                mode = ARGS.getInt(MainMenuFragment.MODE_TAG);
+        }
 
-            //endregion
+        //endregion
 
-            switch (mode)
-            {
-                case GameplayDef.Mode.PRACTICE:
+        switch (mode)
+        {
+            case GameplayDef.Mode.PRACTICE:
 
-                    TOOLBAR.setTitle(currentActivity.getResources()
-                                                    .getText(R.string.practiceModeBtnTxt));
+                TOOLBAR.setTitle(currentActivity.getResources()
+                                                .getText(R.string.practiceModeBtnTxt));
 
-                    break;
+                break;
 
-                case GameplayDef.Mode.TIMED:
+            case GameplayDef.Mode.TIMED:
 
-                    TOOLBAR.setTitle(currentActivity.getResources()
-                                                    .getText(R.string.timedModeBtnTxt));
+                TOOLBAR.setTitle(currentActivity.getResources()
+                                                .getText(R.string.timedModeBtnTxt));
 
-                    break;
+                break;
 
-                default:
+            default:
 
-                    break;
+                break;
 
-            }
+        }
     }
 }
