@@ -2,8 +2,6 @@ package com.willowtreeapps.namegame.util.FragHelper;
 
 import android.content.pm.ActivityInfo;
 
-import androidx.appcompat.widget.Toolbar;
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.rule.ActivityTestRule;
 
 import com.willowtreeapps.namegame.ui.MainMenuFragment;
@@ -16,14 +14,11 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-public class FragHelperTest
+public class MainActivityToMainFragmentReplacementTests
 {
     @Rule
     public ActivityTestRule<NameGameActivity> activityActivityTestRule = new ActivityTestRule<>(NameGameActivity.class);
@@ -73,39 +68,5 @@ public class FragHelperTest
                                        .getResources()
                                        .getText(R.string.practiceModeBtnTxt).toString()
                        )).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void LaunchPracticeModeFragmentTest()
-    {
-        onView(withId(R.id.practiceModeBtn)).perform(click());
-
-        onView(withId(R.id.gameplayToolbar)).check
-                (
-                        matches
-                                (
-                                        hasDescendant
-                                                (
-                                                        withText(R.string.practiceModeBtnTxt)
-                                                )
-                                )
-                );
-    }
-
-    @Test
-    public void LaunchTimedModeFragmentTest()
-    {
-        onView(withId(R.id.timedModeBtn)).perform(click());
-
-        onView(withId(R.id.gameplayToolbar)).check
-                (
-                        matches
-                                (
-                                        hasDescendant
-                                                (
-                                                        withText(R.string.timedModeBtnTxt)
-                                                )
-                                )
-                );
     }
 }

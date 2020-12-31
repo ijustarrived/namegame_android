@@ -16,13 +16,14 @@ public class NameGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.name_game_activity);
 
+        NameGameApplication.get(this).component().inject(this);
+
+        NameGameApplication.get(this)
+                           .SetFrag(new FragHelper(getSupportFragmentManager()));
+
+        //Don't replace fragment if screen orientation changes
         if(savedInstanceState == null)
         {
-            NameGameApplication.get(this).component().inject(this);
-
-            NameGameApplication.get(this)
-                               .SetFrag(new FragHelper(getSupportFragmentManager()));
-
             NameGameApplication.get(this)
                                .GetFrag()
                                .Replace(R.id.fragmentContainer, MainMenuFragment.newInstance(), MainMenuFragment.TAG, false);

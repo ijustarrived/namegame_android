@@ -1,6 +1,5 @@
 package com.willowtreeapps.namegame.ui.gameplay;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.ui.MainMenuFragment;
@@ -68,36 +66,38 @@ public class GameplayFragment extends Fragment
 
         //region Extract arguments
 
-        final Bundle ARGS = getArguments();
+            final Bundle ARGS = getArguments();
 
-        int mode = 0;
+            int mode = 0;
 
-        if(ARGS != null)
-        {
-            if(ARGS.containsKey(MainMenuFragment.MODE_TAG))
-                mode = ARGS.getInt(MainMenuFragment.MODE_TAG);
-        }
+            if (ARGS != null)
+            {
+                if (ARGS.containsKey(MainMenuFragment.MODE_TAG))
+                    mode = ARGS.getInt(MainMenuFragment.MODE_TAG);
+            }
 
-        //endregion
+            //endregion
 
-        switch (mode)
-        {
-            case GameplayDef.Mode.PRACTICE:
+            switch (mode)
+            {
+                case GameplayDef.Mode.PRACTICE:
 
-                TOOLBAR.setTitle(currentActivity.getResources().getText(R.string.practiceModeBtnTxt));
+                    TOOLBAR.setTitle(currentActivity.getResources()
+                                                    .getText(R.string.practiceModeBtnTxt));
 
-                break;
+                    break;
 
-            case GameplayDef.Mode.TIMED:
+                case GameplayDef.Mode.TIMED:
 
-                TOOLBAR.setTitle(currentActivity.getResources().getText(R.string.timedModeBtnTxt));
+                    TOOLBAR.setTitle(currentActivity.getResources()
+                                                    .getText(R.string.timedModeBtnTxt));
 
-                break;
+                    break;
 
-            default:
+                default:
 
-                break;
+                    break;
 
-        }
+            }
     }
 }
