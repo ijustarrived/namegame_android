@@ -4,7 +4,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
+import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.core.NameGameApplication;
 import com.willowtreeapps.namegame.MainMenu.FragHelper.FragHelper;
@@ -21,9 +23,11 @@ public class MainActivity extends AppCompatActivity {
         NameGameApplication.get(this)
                            .SetFrag(new FragHelper(getSupportFragmentManager()));
 
-        //Don't replace fragment if screen orientation changes
+        //Run only once
         if(savedInstanceState == null)
         {
+            NameGameApplication.get(this).SetMainMenuViewModel(ViewModelProviders.of(this).get(MainMenuViewModel.class));
+
             NameGameApplication.get(this)
                                .GetFrag()
                                .Replace(R.id.fragmentContainer, MainMenuFragment.newInstance(), MainMenuFragment.TAG, false);

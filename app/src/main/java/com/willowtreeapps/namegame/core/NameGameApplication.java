@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import androidx.annotation.NonNull;
 
+import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
 import com.willowtreeapps.namegame.network.NetworkModule;
 import com.willowtreeapps.namegame.MainMenu.FragHelper.FragHelper;
 
@@ -25,6 +26,18 @@ public class NameGameApplication extends Application {
     public void SetFrag(FragHelper frag)
     {
         this.frag = frag;
+    }
+
+    private MainMenuViewModel mainMenuViewModel;
+
+    public void SetMainMenuViewModel(MainMenuViewModel mainMenuViewModel)
+    {
+        this.mainMenuViewModel = mainMenuViewModel;
+    }
+
+    public MainMenuViewModel GetMainMenuViewModel()
+    {
+        return mainMenuViewModel;
     }
 
     @Override

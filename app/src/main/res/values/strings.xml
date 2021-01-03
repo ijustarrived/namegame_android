@@ -13,4 +13,6 @@
     <string name="employeeImage4DescTxt">Employee image 4</string>
     <string name="employeeImage5DescTxt">Employee image 5</string>
     <string name="employeeImage6DescTxt">Employee image 6</string>
+    <string name="internetConnectionErrorMsg">There was a problem fetching the data, please find better signal or try again later.</string>
+
 </resources>

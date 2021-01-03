@@ -6,15 +6,22 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeInfo;
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.core.NameGameApplication;
 import com.willowtreeapps.namegame.Gameplay.GameplayDef;
 import com.willowtreeapps.namegame.Gameplay.GameplayFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainMenuFragment extends Fragment
 {
@@ -27,6 +34,8 @@ public class MainMenuFragment extends Fragment
     }
 
     private Context context;
+
+    private List<EmployeeInfo> employeeInfos = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,12 +52,28 @@ public class MainMenuFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
+        NameGameApplication.get(context).GetMainMenuViewModel().GetAllEmployees().observe(getViewLifecycleOwner(), new Observer<List<EmployeeInfo>>()
+        {
+            @Override
+            public void onChanged(List<EmployeeInfo> employeeInfos)
+            {
+                MainMenuFragment.this.employeeInfos = employeeInfos;
+            }
+        });
+
         view.findViewById(R.id.practiceModeBtn).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                ReplaceModeFragment(GameplayDef.Mode.PRACTICE, context);
+                if(!employeeInfos.isEmpty())
+                    ReplaceModeFragment(GameplayDef.Mode.PRACTICE, context);
+
+                else
+                {
+                    Toast.makeText(context, context.getText(R.string.internetConnectionErrorMsg), Toast.LENGTH_LONG)
+                         .show();
+                }
             }
         });
 
@@ -57,12 +82,19 @@ public class MainMenuFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                ReplaceModeFragment(GameplayDef.Mode.TIMED, context);
+                if(!employeeInfos.isEmpty())
+                    ReplaceModeFragment(GameplayDef.Mode.TIMED, context);
+
+                else
+                {
+                    Toast.makeText(context, context.getText(R.string.internetConnectionErrorMsg), Toast.LENGTH_LONG)
+                         .show();
+                }
             }
         });
     }
 
-    private void ReplaceModeFragment( @GameplayDef.Mode int mode, Context context)
+    private void ReplaceModeFragment(@GameplayDef.Mode int mode, Context context)
     {
         final Bundle ARGS = new Bundle();
 
