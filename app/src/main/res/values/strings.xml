@@ -15,4 +15,6 @@
     <string name="employeeImage6DescTxt">Employee image 6</string>
     <string name="internetConnectionErrorMsg">There was a problem fetching the data, please find better signal or try again later.</string>
 
+    <string name="randomizeEmployeesErrorMsg">There was a problem randomly generating a group of employees.</string>
+
 </resources>

@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class ListRandomizer {
 
@@ -31,5 +33,25 @@ public class ListRandomizer {
             picks.add(pickFrom.remove(random.nextInt(pickFrom.size())));
         }
         return picks;
+    }
+
+    public <T> List<T> GenerateRandomListFromList(List<T> randomSeed, int maxSize) throws Exception
+    {
+        if(maxSize >= randomSeed.size())
+            throw new Exception("Max size cannot be greater than the list seed");
+
+        final List<T> NEW_LIST = new ArrayList<>();
+
+        final Set<Integer> RANDOM_INDEXES = new LinkedHashSet<>();
+
+        while (RANDOM_INDEXES.size() != maxSize)
+        {
+            RANDOM_INDEXES.add(random.nextInt(randomSeed.size()));
+        }
+
+        for (int i: RANDOM_INDEXES)
+            NEW_LIST.add(randomSeed.get(i));
+
+        return NEW_LIST;
     }
 }

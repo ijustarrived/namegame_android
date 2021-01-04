@@ -9,7 +9,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public abstract class SynchronousCallAdapter<T> extends CallAdapter<T> {
+/*public abstract class SynchronousCallAdapter<T> extends CallAdapter<T> {
 
     protected abstract Response<T> response();
 
@@ -76,4 +76,4 @@ public abstract class SynchronousCallAdapter<T> extends CallAdapter<T> {
             }
         };
     }
-}
+}*/

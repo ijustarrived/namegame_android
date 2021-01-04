@@ -1,12 +1,9 @@
 package com.willowtreeapps.namegame.MainMenu.Repository;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -15,7 +12,7 @@ import retrofit2.Response;
 
 public class EmployeeRepository
 {
-    private List<EmployeeInfo> allEmployees= new ArrayList<>();
+    private MutableLiveData<List<EmployeeInfo>> allEmployees = new MutableLiveData<>();
 
     private String responseFailedMsg = "";
 
@@ -30,9 +27,7 @@ public class EmployeeRepository
                             public void onResponse(Call<List<EmployeeInfo>> call, Response<List<EmployeeInfo>> response)
                             {
                                 if(response.isSuccessful())
-                                {
-                                    allEmployees.addAll(response.body());
-                                }
+                                    allEmployees.postValue(response.body());
 
                                 else
                                     responseFailedMsg = response.errorBody().toString();
@@ -53,10 +48,6 @@ public class EmployeeRepository
 
     public MutableLiveData<List<EmployeeInfo>> GetAllEmployees()
     {
-        final MutableLiveData<List<EmployeeInfo>> data = new MutableLiveData<>();
-
-        data.postValue(allEmployees);
-
-        return data;
+        return allEmployees;
     }
 }

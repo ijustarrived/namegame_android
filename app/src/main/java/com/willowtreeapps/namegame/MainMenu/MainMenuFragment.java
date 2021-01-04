@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeInfo;
+import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.core.NameGameApplication;
 import com.willowtreeapps.namegame.Gameplay.GameplayDef;
@@ -37,6 +38,8 @@ public class MainMenuFragment extends Fragment
 
     private List<EmployeeInfo> employeeInfos = new ArrayList<>();
 
+    private MainMenuViewModel mainMenuViewModel;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -52,12 +55,27 @@ public class MainMenuFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        NameGameApplication.get(context).GetMainMenuViewModel().GetAllEmployees().observe(getViewLifecycleOwner(), new Observer<List<EmployeeInfo>>()
+        mainMenuViewModel = NameGameApplication.get(context).GetMainMenuViewModel();
+
+        mainMenuViewModel.GetAllEmployees().observe(getViewLifecycleOwner(), new Observer<List<EmployeeInfo>>()
         {
             @Override
             public void onChanged(List<EmployeeInfo> employeeInfos)
             {
                 MainMenuFragment.this.employeeInfos = employeeInfos;
+
+                if(!employeeInfos.isEmpty())
+                {
+                    try
+                    {
+                        mainMenuViewModel.GenerateNewRandomListOf6(employeeInfos, null);
+                    }
+
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -67,7 +85,14 @@ public class MainMenuFragment extends Fragment
             public void onClick(View view)
             {
                 if(!employeeInfos.isEmpty())
-                    ReplaceModeFragment(GameplayDef.Mode.PRACTICE, context);
+                {
+                    if(!mainMenuViewModel.GetRandomListOf6().isEmpty())
+                        ReplaceModeFragment(GameplayDef.Mode.PRACTICE, context);
+
+                    else
+                        Toast.makeText(context, context.getText(R.string.randomizeEmployeesErrorMsg), Toast.LENGTH_LONG)
+                             .show();
+                }
 
                 else
                 {
@@ -83,7 +108,14 @@ public class MainMenuFragment extends Fragment
             public void onClick(View view)
             {
                 if(!employeeInfos.isEmpty())
-                    ReplaceModeFragment(GameplayDef.Mode.TIMED, context);
+                {
+                    if(!mainMenuViewModel.GetRandomListOf6().isEmpty())
+                        ReplaceModeFragment(GameplayDef.Mode.TIMED, context);
+
+                    else
+                        Toast.makeText(context, context.getText(R.string.randomizeEmployeesErrorMsg), Toast.LENGTH_LONG)
+                             .show();
+                }
 
                 else
                 {

@@ -7,7 +7,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-class CallAdapter<T> implements Call<T> {
+/*class CallAdapter<T> implements Call<T> {
 
     @Override
     public Response<T> execute() throws IOException {
@@ -44,4 +44,4 @@ class CallAdapter<T> implements Call<T> {
     public Request request() {
         return null;
     }
-}
+}*/

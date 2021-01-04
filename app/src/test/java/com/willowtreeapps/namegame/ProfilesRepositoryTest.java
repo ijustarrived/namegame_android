@@ -1,6 +1,6 @@
 package com.willowtreeapps.namegame;
 
-import android.test.suitebuilder.annotation.SmallTest;
+//import android.test.suitebuilder.annotation.SmallTest;
 
 import com.willowtreeapps.namegame.network.api.NameGameApi;
 import com.willowtreeapps.namegame.network.api.ProfilesRepository;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SmallTest
+//@SmallTest
 public class ProfilesRepositoryTest {
 
     @Rule
@@ -37,7 +37,7 @@ public class ProfilesRepositoryTest {
         PROFILES = new Profiles(people, null);
     }
 
-    @Test
+    /*@Test
     public void should_throw_for_multiple_registration_of_one_listener() throws Exception {
         NameGameApi api = mock(NameGameApi.class);
         when(api.getProfiles()).thenReturn(SynchronousCallAdapter.forSuccess(PROFILES));
@@ -88,6 +88,6 @@ public class ProfilesRepositoryTest {
         ProfilesRepository.Listener listener = mock(ProfilesRepository.Listener.class);
         ProfilesRepository repo = new ProfilesRepository(api, listener);
         verify(listener, times(1)).onError(any(IOException.class));
-    }
+    }*/
 
 }
