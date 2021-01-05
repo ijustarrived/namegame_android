@@ -14,10 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.willowtreeapps.namegame.Gameplay.Pojo.EmployeeInfo;
-import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeApiInfo;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.MainMenu.MainMenuFragment;
@@ -25,7 +25,6 @@ import com.willowtreeapps.namegame.core.NameGameApplication;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class GameplayFragment extends Fragment
 {
@@ -98,10 +97,14 @@ public class GameplayFragment extends Fragment
 
         //endregion
 
+        final EmployeeInfo RANDOM_EMPLOYEE = MAIN_MENU_VIEW_MODEL.GetRandomEmployee();
+
         ((TextView)view.findViewById(R.id.employeeName)).setText
                 (
-                        String.format("%s %s", MAIN_MENU_VIEW_MODEL.getRandomEmployee().GetFirstName(), MAIN_MENU_VIEW_MODEL.getRandomEmployee().GetLastName())
+                        String.format("%s %s", MAIN_MENU_VIEW_MODEL.GetRandomEmployee().GetFirstName(), MAIN_MENU_VIEW_MODEL.GetRandomEmployee().GetLastName())
                 );
+
+        //region Set images
 
         final Picasso PICASSO = Picasso.get();
 
@@ -113,6 +116,21 @@ public class GameplayFragment extends Fragment
 
             final ImageView IMG_VW = employeeImgVws.get(i);
 
+            IMG_VW.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    if(RANDOM_EMPLOYEE.GetId().equals(EMPLOYEE_INFO.GetId()))
+                        Toast.makeText(currentActivity, "You got it!", Toast.LENGTH_SHORT)
+                             .show();
+
+                    else
+                        Toast.makeText(currentActivity, "Better luck next time", Toast.LENGTH_SHORT)
+                             .show();
+                }
+            });
+
             IMG_VW.setContentDescription(EMPLOYEE_INFO.GetHeadshotInfo().GetAlt());
 
             PICASSO.load(Uri.parse("https:" + EMPLOYEE_INFO.GetHeadshotInfo().GetUrl()))
@@ -122,6 +140,8 @@ public class GameplayFragment extends Fragment
                    .error(R.drawable.error_ic)
                    .into(IMG_VW);
         }
+
+        //endregion
 
         //region Init Toolbar
 

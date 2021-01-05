@@ -61,7 +61,7 @@ public class MainMenuViewModel extends ViewModel
         return randomEmployee;
     }
 
-    public EmployeeInfo getRandomEmployee()
+    public EmployeeInfo GetRandomEmployee()
     {
         return randomEmployee;
     }
