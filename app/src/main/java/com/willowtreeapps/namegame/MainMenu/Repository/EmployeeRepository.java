@@ -2,8 +2,10 @@ package com.willowtreeapps.namegame.MainMenu.Repository;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeInfo;
+import com.willowtreeapps.namegame.Gameplay.Pojo.EmployeeInfo;
+import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeApiInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -21,20 +23,29 @@ public class EmployeeRepository
         EmployeeRetrofit.GetInstance(EmployeeAPI.BASE_URL)
                         .create(EmployeeAPI.class)
                         .GetAllEmployees()
-                        .enqueue(new Callback<List<EmployeeInfo>>()
+                        .enqueue(new Callback<List<EmployeeApiInfo>>()
                         {
                             @Override
-                            public void onResponse(Call<List<EmployeeInfo>> call, Response<List<EmployeeInfo>> response)
+                            public void onResponse(Call<List<EmployeeApiInfo>> call, Response<List<EmployeeApiInfo>> response)
                             {
                                 if(response.isSuccessful())
-                                    allEmployees.postValue(response.body());
+                                {
+                                    final List<EmployeeInfo> EMPLOYEE_INFOS = new ArrayList<>();
+
+                                    for (EmployeeApiInfo e: response.body())
+                                    {
+                                        EMPLOYEE_INFOS.add(new EmployeeInfo(e));
+                                    }
+
+                                    allEmployees.postValue(EMPLOYEE_INFOS);
+                                }
 
                                 else
                                     responseFailedMsg = response.errorBody().toString();
                             }
 
                             @Override
-                            public void onFailure(Call<List<EmployeeInfo>> call, Throwable t)
+                            public void onFailure(Call<List<EmployeeApiInfo>> call, Throwable t)
                             {
                                 responseFailedMsg = t.getLocalizedMessage();
                             }

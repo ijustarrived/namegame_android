@@ -1,9 +1,10 @@
 package com.willowtreeapps.namegame.MainMenu.Pojo;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.willowtreeapps.namegame.Gameplay.Pojo.EmployeeInfo;
 import com.willowtreeapps.namegame.MainMenu.Repository.EmployeeRepository;
 import com.willowtreeapps.namegame.MainMenu.Singleton.ListRandomizerInstance;
 import com.willowtreeapps.namegame.core.ListRandomizer;
@@ -14,6 +15,10 @@ import java.util.Random;
 
 public class MainMenuViewModel extends ViewModel
 {
+    private EmployeeInfo randomEmployee;
+
+    private ListRandomizer listRandomizer;
+
     public MainMenuViewModel()
     {
         repository = new EmployeeRepository();
@@ -23,7 +28,7 @@ public class MainMenuViewModel extends ViewModel
 
     private EmployeeRepository repository;
 
-    public LiveData<List<EmployeeInfo>> GetAllEmployees()
+    public MutableLiveData<List<EmployeeInfo>> GetAllEmployees()
     {
         return repository.GetAllEmployees();
     }
@@ -42,8 +47,22 @@ public class MainMenuViewModel extends ViewModel
 
     public List<EmployeeInfo> GenerateNewRandomListOf6(List<EmployeeInfo> randomSeed, @Nullable Random random) throws Exception
     {
-        randomListOf6 = ListRandomizerInstance.GetInstance(random).GenerateRandomListFromList(randomSeed, 6);
+        listRandomizer = ListRandomizerInstance.GetInstance(random);
+
+        randomListOf6 = listRandomizer.GenerateRandomListFromList(randomSeed, 6);
 
         return randomListOf6;
+    }
+
+    public EmployeeInfo PickRandomEmployee(List<EmployeeInfo> employeeInfos) throws Exception
+    {
+        randomEmployee = listRandomizer.GenerateRandomItemFromList(employeeInfos);
+
+        return randomEmployee;
+    }
+
+    public EmployeeInfo getRandomEmployee()
+    {
+        return randomEmployee;
     }
 }

@@ -35,10 +35,10 @@ public class ListRandomizer {
         return picks;
     }
 
-    public <T> List<T> GenerateRandomListFromList(List<T> randomSeed, int maxSize) throws Exception
+    public <T> List<T> GenerateRandomListFromList(@NonNull List<T> randomSeed, int maxSize) throws Exception
     {
         if(maxSize >= randomSeed.size())
-            throw new Exception("Max size cannot be greater than the list seed");
+            throw new Exception("Max size must be less than the list seed");
 
         final List<T> NEW_LIST = new ArrayList<>();
 
@@ -53,5 +53,10 @@ public class ListRandomizer {
             NEW_LIST.add(randomSeed.get(i));
 
         return NEW_LIST;
+    }
+
+    public <T> T GenerateRandomItemFromList(List<T> list) throws Exception
+    {
+        return list.get(random.nextInt(list.size()));
     }
 }

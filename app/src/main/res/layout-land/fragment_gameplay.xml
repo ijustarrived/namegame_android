@@ -18,7 +18,6 @@
         android:layout_marginStart="45dp"
         android:layout_marginTop="45dp"
         android:contentDescription="@string/employeeNameDescTxt"
-        android:text="Jose Mireles"
         android:textColor="@color/darkGray"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -44,12 +43,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/employeeImage1DescTxt"
-            app:srcCompat="@drawable/face_ic_dark" />
+            android:focusable="true"/>
 
         <View
             android:id="@+id/resultView1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
 
     </FrameLayout>
 
@@ -71,12 +71,13 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/employeeImage2DescTxt"
             app:layout_constraintVertical_bias="0.15"
-            app:srcCompat="@drawable/face_ic_dark" />
+            android:focusable="true"/>
 
         <View
             android:id="@+id/resultView2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
 
     </FrameLayout>
 
@@ -97,12 +98,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/employeeImage5DescTxt"
-            app:srcCompat="@drawable/face_ic_dark" />
+            android:focusable="true"/>
 
         <View
             android:id="@+id/resultView5"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
 
     </FrameLayout>
 
@@ -126,7 +128,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/employeeImage3DescTxt"
-            app:srcCompat="@drawable/face_ic_dark" />
+            android:focusable="true"/>
 
         <View
             android:id="@+id/resultView3"
@@ -135,7 +137,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/employeeImage3"
             app:layout_constraintEnd_toEndOf="@id/employeeImage3"
             app:layout_constraintStart_toStartOf="@+id/employeeImage3"
-            app:layout_constraintTop_toTopOf="@+id/employeeImage3" />
+            app:layout_constraintTop_toTopOf="@+id/employeeImage3"
+            android:visibility="gone"/>
 
     </FrameLayout>
 
@@ -156,12 +159,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/employeeImage4DescTxt"
-            app:srcCompat="@drawable/face_ic_dark" />
+            android:focusable="true"/>
 
         <View
             android:id="@+id/resultView4"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
 
     </FrameLayout>
 
@@ -182,7 +186,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/employeeImage6DescTxt"
-            app:srcCompat="@drawable/face_ic_dark" />
+            android:focusable="true"/>
 
         <View
             android:id="@+id/resultView6"

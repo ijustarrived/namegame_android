@@ -100,4 +100,43 @@ public class ListRandomizerTest
 
         assertEquals(6, newList.size());
     }
+
+    @Test
+    public void GenerateListOf0From0()
+    {
+        final List<String> ITEMS = new ArrayList<>();
+
+        List<String> newList;
+
+        try
+        {
+            newList = listRandomizer.GenerateRandomListFromList(ITEMS, 0);
+        }
+
+        catch (Exception e)
+        {
+            throw new AssertionError(e.getMessage());
+        }
+
+        assertEquals(0, newList.size());
+    }
+
+    @Test
+    public void GetRandomItemFromList()
+    {
+        final List<String> ITEMS = Arrays.asList("1", "2", "3");
+
+        String item = "";
+
+        try
+        {
+            item = listRandomizer.GenerateRandomItemFromList(ITEMS);
+        }
+        catch (Exception e)
+        {
+            throw new AssertionError(e.getMessage());
+        }
+
+        assertFalse(item.isEmpty());
+    }
 }

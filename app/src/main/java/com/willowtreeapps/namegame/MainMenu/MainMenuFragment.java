@@ -8,13 +8,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeInfo;
+import com.willowtreeapps.namegame.Gameplay.Pojo.EmployeeInfo;
+import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeApiInfo;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.core.NameGameApplication;
@@ -69,11 +69,14 @@ public class MainMenuFragment extends Fragment
                     try
                     {
                         mainMenuViewModel.GenerateNewRandomListOf6(employeeInfos, null);
+
+                        mainMenuViewModel.PickRandomEmployee(mainMenuViewModel.GetRandomListOf6());
                     }
 
-                    catch (Exception e)
+                    catch (Exception ignore)
                     {
-                        e.printStackTrace();
+                        Toast.makeText(context, context.getText(R.string.randomizeEmployeesErrorMsg), Toast.LENGTH_LONG)
+                             .show();
                     }
                 }
             }

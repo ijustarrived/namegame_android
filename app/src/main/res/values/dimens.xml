@@ -2,4 +2,5 @@
     <dimen name="name_game_title_text_margin">16dp</dimen>
     <dimen name="mainMenuPaddingPortrait">30dp</dimen>
     <dimen name="mainMenuPaddingLandscape">20dp</dimen>
+    <dimen name="imgDimension">164dp</dimen>
 </resources>

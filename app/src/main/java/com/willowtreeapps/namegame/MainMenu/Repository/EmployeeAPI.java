@@ -1,6 +1,6 @@
 package com.willowtreeapps.namegame.MainMenu.Repository;
 
-import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeInfo;
+import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeApiInfo;
 
 import java.util.List;
 
@@ -12,5 +12,5 @@ public interface EmployeeAPI
     String BASE_URL = "https://willowtreeapps.com";
 
     @GET("/api/v1.0/profiles")
-    Call<List<EmployeeInfo>> GetAllEmployees();
+    Call<List<EmployeeApiInfo>> GetAllEmployees();
 }

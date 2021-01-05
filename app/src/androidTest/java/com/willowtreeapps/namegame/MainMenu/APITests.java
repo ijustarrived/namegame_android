@@ -4,7 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
 import androidx.test.rule.ActivityTestRule;
 
-import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeInfo;
+import com.willowtreeapps.namegame.Gameplay.Pojo.EmployeeInfo;
+import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeApiInfo;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
 import com.willowtreeapps.namegame.core.NameGameApplication;
 
