@@ -1,5 +1,8 @@
 package com.willowtreeapps.namegame.Gameplay;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -8,13 +11,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.willowtreeapps.namegame.Gameplay.Pojo.EmployeeInfo;
@@ -34,6 +37,12 @@ public class GameplayFragment extends Fragment
 
     private List<ImageView> employeeImgVws = new ArrayList<>(),
     resultImgVws = new ArrayList<>();
+
+    private Picasso picasso;
+
+    private int gameplayMode = 0,
+            triesCounter = 1,
+    correctCounter = 0;
 
     public static GameplayFragment newInstance(Bundle args)
     {
@@ -101,47 +110,12 @@ public class GameplayFragment extends Fragment
 
         ((TextView)view.findViewById(R.id.employeeName)).setText
                 (
-                        String.format("%s %s", MAIN_MENU_VIEW_MODEL.GetRandomEmployee().GetFirstName(), MAIN_MENU_VIEW_MODEL.GetRandomEmployee().GetLastName())
+                        String.format("%s %s", RANDOM_EMPLOYEE.GetFirstName(), RANDOM_EMPLOYEE.GetLastName())
                 );
 
-        //region Set images
+        picasso = Picasso.get();
 
-        final Picasso PICASSO = Picasso.get();
-
-        final List<EmployeeInfo> RANDOM_EMPLOYEES = NameGameApplication.get(currentActivity).GetMainMenuViewModel().GetRandomListOf6();
-
-        for (int i = 0; i < RANDOM_EMPLOYEES.size(); i++)
-        {
-            final EmployeeInfo EMPLOYEE_INFO = RANDOM_EMPLOYEES.get(i);
-
-            final ImageView IMG_VW = employeeImgVws.get(i);
-
-            IMG_VW.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    if(RANDOM_EMPLOYEE.GetId().equals(EMPLOYEE_INFO.GetId()))
-                        Toast.makeText(currentActivity, "You got it!", Toast.LENGTH_SHORT)
-                             .show();
-
-                    else
-                        Toast.makeText(currentActivity, "Better luck next time", Toast.LENGTH_SHORT)
-                             .show();
-                }
-            });
-
-            IMG_VW.setContentDescription(EMPLOYEE_INFO.GetHeadshotInfo().GetAlt());
-
-            PICASSO.load(Uri.parse("https:" + EMPLOYEE_INFO.GetHeadshotInfo().GetUrl()))
-                   .resize((int)currentActivity.getResources().getDimension(R.dimen.imgDimension), (int)currentActivity.getResources().getDimension(R.dimen.imgDimension))
-                   .centerCrop()
-                   .placeholder(R.drawable.face_ic_dark)
-                   .error(R.drawable.error_ic)
-                   .into(IMG_VW);
-        }
-
-        //endregion
+        SetData(picasso, RANDOM_EMPLOYEE, MAIN_MENU_VIEW_MODEL.GetRandomListOf6(), currentActivity);
 
         //region Init Toolbar
 
@@ -166,17 +140,15 @@ public class GameplayFragment extends Fragment
 
         final Bundle ARGS = getArguments();
 
-        int mode = 0;
-
         if (ARGS != null)
         {
             if (ARGS.containsKey(MainMenuFragment.MODE_TAG))
-                mode = ARGS.getInt(MainMenuFragment.MODE_TAG);
+                gameplayMode = ARGS.getInt(MainMenuFragment.MODE_TAG);
         }
 
         //endregion
 
-        switch (mode)
+        switch (gameplayMode)
         {
             case GameplayDef.Mode.PRACTICE:
 
@@ -196,6 +168,72 @@ public class GameplayFragment extends Fragment
 
                 break;
 
+        }
+    }
+
+    private void SetData(Picasso picasso, EmployeeInfo randomEmployee, List<EmployeeInfo> randomEmployees, FragmentActivity activity)
+    {
+        String ALERT_MSG = activity.getText(R.string.gameOverBodyTxt).toString();
+
+        final AlertDialog ALERT_DIALOG = new AlertDialog.Builder(activity)
+                .setTitle(activity.getText(R.string.gameOverTitleTxt))
+                .setMessage(gameplayMode == GameplayDef.Mode.PRACTICE ? ALERT_MSG + correctCounter : ALERT_MSG + String.format("%s/%s", correctCounter, triesCounter))
+                .setCancelable(true)
+                .setPositiveButton(activity.getText(R.string.gameOverBtnTxt), new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        activity.onBackPressed();
+                    }
+                })
+                .create();
+
+        for (int i = 0; i < randomEmployees.size(); i++)
+        {
+            final EmployeeInfo EMPLOYEE_INFO = randomEmployees.get(i);
+
+            final ImageView IMG_VW = employeeImgVws.get(i);
+
+            IMG_VW.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    triesCounter++;
+
+                    if(randomEmployee.GetId().equals(EMPLOYEE_INFO.GetId()))
+                    {
+                        correctCounter++;
+                    }
+
+                    else
+                    {
+                        switch (gameplayMode)
+                        {
+                            case GameplayDef.Mode.PRACTICE:
+
+                                ALERT_DIALOG.show();
+
+                                break;
+
+                            case GameplayDef.Mode.TIMED:
+
+                                break;
+
+                        }
+                    }
+                }
+            });
+
+            IMG_VW.setContentDescription(EMPLOYEE_INFO.GetHeadshotInfo().GetAlt());
+
+            picasso.load(Uri.parse("https:" + EMPLOYEE_INFO.GetHeadshotInfo().GetUrl()))
+                   .resize((int)currentActivity.getResources().getDimension(R.dimen.imgDimension), (int)currentActivity.getResources().getDimension(R.dimen.imgDimension))
+                   .centerCrop()
+                   .placeholder(R.drawable.face_ic_dark)
+                   .error(R.drawable.error_ic)
+                   .into(IMG_VW);
         }
     }
 }

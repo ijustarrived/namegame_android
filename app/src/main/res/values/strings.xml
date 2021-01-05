@@ -17,4 +17,7 @@
     <string name="randomizeEmployeesErrorMsg">There was a problem randomly generating a group of employees.</string>
     <string name="loadingImgErrorMsg">There was a problem loading an image.</string>
 
+    <string name="gameOverBtnTxt">OK</string>
+    <string name="gameOverTitleTxt">Game Over</string>
+    <string name="gameOverBodyTxt">You Scored </string>
 </resources>
