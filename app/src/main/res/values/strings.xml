@@ -19,5 +19,5 @@
 
     <string name="gameOverBtnTxt">OK</string>
     <string name="gameOverTitleTxt">Game Over</string>
-    <string name="gameOverBodyTxt">You Scored </string>
+    <string name="gameOverBodyTxt">You Scored</string>
 </resources>

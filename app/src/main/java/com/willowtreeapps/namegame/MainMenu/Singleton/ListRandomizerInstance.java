@@ -10,6 +10,9 @@ public class ListRandomizerInstance
 {
     private static ListRandomizer listRandomizer;
 
+    /**
+     * @param random If null, will use a new instance of Random.
+     */
     public static synchronized ListRandomizer GetInstance(@Nullable Random random)
     {
         if(listRandomizer == null)

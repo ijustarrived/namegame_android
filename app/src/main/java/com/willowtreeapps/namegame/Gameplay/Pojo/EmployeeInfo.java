@@ -1,8 +1,6 @@
 package com.willowtreeapps.namegame.Gameplay.Pojo;
 
-import com.google.gson.annotations.SerializedName;
 import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeApiInfo;
-import com.willowtreeapps.namegame.MainMenu.Pojo.HeadshotApiInfo;
 
 public class EmployeeInfo
 {

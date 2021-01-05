@@ -2,16 +2,15 @@ package com.willowtreeapps.namegame.MainMenu;
 
 import android.content.pm.ActivityInfo;
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.test.rule.ActivityTestRule;
 
+import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeViewModel;
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.core.NameGameApplication;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -20,7 +19,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 //If you run them all, some of the landscape and back to portrait test might fail because the thread sleep needs a bit more time
 public class NavigationFromMainMenuToGameplayTests
@@ -30,10 +28,14 @@ public class NavigationFromMainMenuToGameplayTests
 
     private MainActivity activity;
 
+    private EmployeeViewModel employeeViewModel;
+
     @Before
     public void Init()
     {
         activity = activityActivityTestRule.getActivity();
+
+        employeeViewModel = NameGameApplication.get(activityActivityTestRule.getActivity()).GetEmployeeViewModel();
     }
 
     @Test
@@ -295,7 +297,7 @@ public class NavigationFromMainMenuToGameplayTests
 
         onView(withId(R.id.practiceModeBtn)).perform(click());
 
-        assertEquals(6, NameGameApplication.get(activity).GetMainMenuViewModel().GetRandomListOf6().size());
+        assertEquals(6, employeeViewModel.GetRandomListOf6().size());
     }
 
     @Test
@@ -314,6 +316,6 @@ public class NavigationFromMainMenuToGameplayTests
 
         onView(withId(R.id.timedModeBtn)).perform(click());
 
-        assertEquals(6, NameGameApplication.get(activity).GetMainMenuViewModel().GetRandomListOf6().size());
+        assertEquals(6, employeeViewModel.GetRandomListOf6().size());
     }
 }

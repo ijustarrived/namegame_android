@@ -15,15 +15,11 @@ import java.util.Random;
 
 public class MainMenuViewModel extends ViewModel
 {
-    private EmployeeInfo randomEmployee;
-
     private ListRandomizer listRandomizer;
 
     public MainMenuViewModel()
     {
         repository = new EmployeeRepository();
-
-        randomListOf6 = new ArrayList<>();
     }
 
     private EmployeeRepository repository;
@@ -38,31 +34,14 @@ public class MainMenuViewModel extends ViewModel
         return repository.GetResponseFailedMsg();
     }
 
-    private List<EmployeeInfo> randomListOf6;
 
-    public List<EmployeeInfo> GetRandomListOf6()
+    public ListRandomizer GetListRandomizer()
     {
-        return randomListOf6;
+        return listRandomizer;
     }
 
-    public List<EmployeeInfo> GenerateNewRandomListOf6(List<EmployeeInfo> randomSeed, @Nullable Random random) throws Exception
+    public void SetListRandomizer(ListRandomizer listRandomizer)
     {
-        listRandomizer = ListRandomizerInstance.GetInstance(random);
-
-        randomListOf6 = listRandomizer.GenerateRandomListFromList(randomSeed, 6);
-
-        return randomListOf6;
-    }
-
-    public EmployeeInfo PickRandomEmployee(List<EmployeeInfo> employeeInfos) throws Exception
-    {
-        randomEmployee = listRandomizer.GenerateRandomItemFromList(employeeInfos);
-
-        return randomEmployee;
-    }
-
-    public EmployeeInfo GetRandomEmployee()
-    {
-        return randomEmployee;
+        this.listRandomizer = listRandomizer;
     }
 }

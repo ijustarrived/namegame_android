@@ -18,9 +18,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.willowtreeapps.namegame.Gameplay.Pojo.EmployeeInfo;
+import com.willowtreeapps.namegame.Gameplay.Pojo.HeadshotInfo;
+import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeViewModel;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.MainMenu.MainMenuFragment;
@@ -38,11 +41,15 @@ public class GameplayFragment extends Fragment
     private List<ImageView> employeeImgVws = new ArrayList<>(),
     resultImgVws = new ArrayList<>();
 
-    private Picasso picasso;
+    //private Picasso picasso;
 
     private int gameplayMode = 0,
             triesCounter = 1,
     correctCounter = 0;
+
+    private EmployeeViewModel employeeViewModel;
+
+    private MainMenuViewModel mainMenuViewModel;
 
     public static GameplayFragment newInstance(Bundle args)
     {
@@ -68,7 +75,9 @@ public class GameplayFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        final MainMenuViewModel MAIN_MENU_VIEW_MODEL = NameGameApplication.get(currentActivity).GetMainMenuViewModel();
+        mainMenuViewModel = NameGameApplication.get(currentActivity).GetMainMenuViewModel();
+
+        employeeViewModel = NameGameApplication.get(currentActivity).GetEmployeeViewModel();
 
         //region Get all imgVws
 
@@ -105,17 +114,6 @@ public class GameplayFragment extends Fragment
         //endregion
 
         //endregion
-
-        final EmployeeInfo RANDOM_EMPLOYEE = MAIN_MENU_VIEW_MODEL.GetRandomEmployee();
-
-        ((TextView)view.findViewById(R.id.employeeName)).setText
-                (
-                        String.format("%s %s", RANDOM_EMPLOYEE.GetFirstName(), RANDOM_EMPLOYEE.GetLastName())
-                );
-
-        picasso = Picasso.get();
-
-        SetData(picasso, RANDOM_EMPLOYEE, MAIN_MENU_VIEW_MODEL.GetRandomListOf6(), currentActivity);
 
         //region Init Toolbar
 
@@ -169,15 +167,24 @@ public class GameplayFragment extends Fragment
                 break;
 
         }
+
+        final EmployeeInfo RANDOM_EMPLOYEE = employeeViewModel.GetRandomEmployee();
+
+        ((TextView)view.findViewById(R.id.employeeName)).setText
+                (
+                        String.format("%s %s", RANDOM_EMPLOYEE.GetFirstName(), RANDOM_EMPLOYEE.GetLastName())
+                );
+
+        SetData(Picasso.get(), RANDOM_EMPLOYEE, employeeViewModel.GetRandomListOf6(), currentActivity, employeeImgVws);
     }
 
-    private void SetData(Picasso picasso, EmployeeInfo randomEmployee, List<EmployeeInfo> randomEmployees, FragmentActivity activity)
+    private void SetData(Picasso picasso, EmployeeInfo randomEmployee, List<EmployeeInfo> randomEmployees, FragmentActivity activity, List<ImageView> employeeImgVws)
     {
         String ALERT_MSG = activity.getText(R.string.gameOverBodyTxt).toString();
 
         final AlertDialog ALERT_DIALOG = new AlertDialog.Builder(activity)
                 .setTitle(activity.getText(R.string.gameOverTitleTxt))
-                .setMessage(gameplayMode == GameplayDef.Mode.PRACTICE ? ALERT_MSG + correctCounter : ALERT_MSG + String.format("%s/%s", correctCounter, triesCounter))
+                .setMessage(gameplayMode == GameplayDef.Mode.PRACTICE ? String.format("%s %s", ALERT_MSG, correctCounter ): ALERT_MSG + String.format(" %s/%s", correctCounter, triesCounter))
                 .setCancelable(true)
                 .setPositiveButton(activity.getText(R.string.gameOverBtnTxt), new DialogInterface.OnClickListener()
                 {
@@ -202,9 +209,31 @@ public class GameplayFragment extends Fragment
                 {
                     triesCounter++;
 
-                    if(randomEmployee.GetId().equals(EMPLOYEE_INFO.GetId()))
+                    if(employeeImgVws.get(randomEmployees.indexOf(randomEmployee)).getId() == view.getId())
                     {
                         correctCounter++;
+
+                        List<EmployeeInfo> newRandomList = new ArrayList<>();
+
+                        EmployeeInfo newRandomEmployee = new EmployeeInfo("", "", "", new HeadshotInfo("", "", "", ""));
+
+                        try
+                        {
+                            newRandomList = employeeViewModel.GenerateNewRandomListOf6(employeeViewModel.GetAllEmployees(), mainMenuViewModel.GetListRandomizer());
+
+                            newRandomEmployee = employeeViewModel.PickRandomEmployee(newRandomList, mainMenuViewModel.GetListRandomizer());
+                        }
+
+                        catch (Exception ignore)
+                        {
+                        }
+
+                        if(!newRandomEmployee.GetId().isEmpty())
+                            SetData(picasso, newRandomEmployee, newRandomList, activity, employeeImgVws);
+
+                        else
+                            Toast.makeText(activity, activity.getText(R.string.randomizeEmployeesErrorMsg), Toast.LENGTH_LONG)
+                                 .show();
                     }
 
                     else

@@ -14,14 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.willowtreeapps.namegame.Gameplay.Pojo.EmployeeInfo;
-import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeApiInfo;
+import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeViewModel;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.core.NameGameApplication;
 import com.willowtreeapps.namegame.Gameplay.GameplayDef;
 import com.willowtreeapps.namegame.Gameplay.GameplayFragment;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenuFragment extends Fragment
@@ -36,9 +34,9 @@ public class MainMenuFragment extends Fragment
 
     private Context context;
 
-    private List<EmployeeInfo> employeeInfos = new ArrayList<>();
-
     private MainMenuViewModel mainMenuViewModel;
+
+    private EmployeeViewModel employeeViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,20 +55,22 @@ public class MainMenuFragment extends Fragment
 
         mainMenuViewModel = NameGameApplication.get(context).GetMainMenuViewModel();
 
+        employeeViewModel = NameGameApplication.get(context).GetEmployeeViewModel();
+
         mainMenuViewModel.GetAllEmployees().observe(getViewLifecycleOwner(), new Observer<List<EmployeeInfo>>()
         {
             @Override
             public void onChanged(List<EmployeeInfo> employeeInfos)
             {
-                MainMenuFragment.this.employeeInfos = employeeInfos;
+                employeeViewModel.SetAllEmployees(employeeInfos);
 
                 if(!employeeInfos.isEmpty())
                 {
                     try
                     {
-                        mainMenuViewModel.GenerateNewRandomListOf6(employeeInfos, null);
+                        employeeViewModel.GenerateNewRandomListOf6(employeeInfos, mainMenuViewModel.GetListRandomizer());
 
-                        mainMenuViewModel.PickRandomEmployee(mainMenuViewModel.GetRandomListOf6());
+                        employeeViewModel.PickRandomEmployee(employeeViewModel.GetRandomListOf6(), mainMenuViewModel.GetListRandomizer());
                     }
 
                     catch (Exception ignore)
@@ -87,9 +87,9 @@ public class MainMenuFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                if(!employeeInfos.isEmpty())
+                if(!employeeViewModel.GetAllEmployees().isEmpty())
                 {
-                    if(!mainMenuViewModel.GetRandomListOf6().isEmpty())
+                    if(!employeeViewModel.GetRandomListOf6().isEmpty())
                         ReplaceModeFragment(GameplayDef.Mode.PRACTICE, context);
 
                     else
@@ -110,9 +110,9 @@ public class MainMenuFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                if(!employeeInfos.isEmpty())
+                if(!employeeViewModel.GetAllEmployees().isEmpty())
                 {
-                    if(!mainMenuViewModel.GetRandomListOf6().isEmpty())
+                    if(!employeeViewModel.GetRandomListOf6().isEmpty())
                         ReplaceModeFragment(GameplayDef.Mode.TIMED, context);
 
                     else

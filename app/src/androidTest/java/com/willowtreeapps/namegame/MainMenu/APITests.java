@@ -5,8 +5,9 @@ import androidx.lifecycle.Observer;
 import androidx.test.rule.ActivityTestRule;
 
 import com.willowtreeapps.namegame.Gameplay.Pojo.EmployeeInfo;
-import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeApiInfo;
+import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeViewModel;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
+import com.willowtreeapps.namegame.MainMenu.Singleton.ListRandomizerInstance;
 import com.willowtreeapps.namegame.core.NameGameApplication;
 
 import org.junit.Before;
@@ -29,17 +30,19 @@ public class APITests
     @Rule
     public TestRule rule = new InstantTaskExecutorRule();
 
-    private MainActivity activity;
-
     private MainMenuViewModel mainMenuViewModel;
+
+    private EmployeeViewModel employeeViewModel;
 
     @Before
     public void Init()
     {
-        activity = activityActivityTestRule.getActivity();
+        final MainActivity ACTIVITY = activityActivityTestRule.getActivity();
 
-        mainMenuViewModel = NameGameApplication.get(activity)
+        mainMenuViewModel = NameGameApplication.get(ACTIVITY)
                                                .GetMainMenuViewModel();
+
+        employeeViewModel = NameGameApplication.get(ACTIVITY).GetEmployeeViewModel();
     }
 
     @Test
@@ -65,7 +68,9 @@ public class APITests
             {
                 try
                 {
-                    assertEquals(6 ,mainMenuViewModel.GenerateNewRandomListOf6(employeeInfos, null).size());
+                    //assertEquals(6 ,mainMenuViewModel.GenerateNewRandomListOf6(employeeInfos, null).size());
+
+                    assertEquals(6, employeeViewModel.GenerateNewRandomListOf6(employeeInfos, ListRandomizerInstance.GetInstance(null)).size());
                 }
 
                 catch (Exception e)
