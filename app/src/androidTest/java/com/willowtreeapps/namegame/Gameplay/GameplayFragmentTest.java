@@ -24,6 +24,7 @@ import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.willowtreeapps.namegame.Gameplay.ViewBackgroundMatcher.HasBackground;
 import static com.willowtreeapps.namegame.Gameplay.ImageViewDrawableMatcher.HasDrawable;
 
 public class GameplayFragmentTest
@@ -76,7 +77,38 @@ public class GameplayFragmentTest
 
         LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
 
+        WaitToFinish();
+
         onView(withText(R.string.gameOverTitleTxt)).inRoot(isDialog()).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void LosePracticeGameAndValidateIncorrectAnswerImageTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        onView
+                (
+                        withId
+                                (
+                                        GetResultVwResIdFromSelectedResId
+                                                (
+                                                        LoseGame
+                                                                (
+                                                                        employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee())
+                                                                )
+                                                )
+                                )
+                ).check
+                (
+                        matches
+                                (
+                                        HasBackground()
+                                )
+                );
     }
 
     @Test
@@ -105,6 +137,60 @@ public class GameplayFragmentTest
         onView(withText(R.string.gameOverTitleTxt)).check(doesNotExist());
     }
 
+    //This test will fail unless the delay of the answer handler, in the gameplay view model, is manually increased to 3000 or higher
+    @Test
+    public void SelectCorrectAnswerAndValidateCorrectImageInPracticeModeTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        onView
+                (
+                        withId
+                                (
+                                        GetResultVwResIdFromSelectedIndex
+                                                (
+                                                        SelectCorrectAnswer(1)
+                                                )
+                                )
+                ).check
+                (
+                        matches
+                                (
+                                        HasBackground()
+                                )
+                );
+    }
+
+    //This test will fail unless the delay of the answer handler, in the gameplay view model, is manually increased to 3000 or higher
+    @Test
+    public void Select2CorrectAnswerAndValidateCorrectImageInPracticeModeTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        onView
+                (
+                        withId
+                                (
+                                        GetResultVwResIdFromSelectedIndex
+                                                (
+                                                        SelectCorrectAnswer(2)
+                                                )
+                                )
+                ).check
+                (
+                        matches
+                                (
+                                        HasBackground()
+                                )
+                );
+    }
+
     @Test
     public void SelectCorrectAnswerAndLoseInPracticeModeTest()
     {
@@ -130,27 +216,7 @@ public class GameplayFragmentTest
 
         LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
 
-        //16908299
-        final int ALERT_DIALOG_TXT_VW_ID = activity.getResources()
-                                         .getIdentifier
-                                                 (
-                                                         "16908299",
-                                                         "id",
-                                                         InstrumentationRegistry.getInstrumentation()
-                                                                                .getTargetContext()
-                                                                                .getPackageName()
-                                                 );
-
-        onView(withId(ALERT_DIALOG_TXT_VW_ID)).check
-                (
-                        matches
-                                (
-                                        withText
-                                                (
-                                                        String.format("%s %s", activity.getText(R.string.gameOverBodyTxt), "1")
-                                                )
-                                )
-                );
+        ValidateGameOverScore("1");
     }
 
     @Test
@@ -300,7 +366,43 @@ public class GameplayFragmentTest
         VerifyIfEmployeeFullNameWasSetAfterGameLoadedTest();
     }
 
-    private int GetImgVwResId(int index)
+    @Test
+    public void PracticeModeAndSelectCorrectAndChangeToLandAndLoseAndValidateScoreTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        SelectCorrectAnswer(1);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ValidateGameOverScore("1");
+    }
+
+    @Test
+    public void PracticeModeAndSelectCorrectAndChangeToLandAndBackToPortAndLoseAndValidateScoreTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        SelectCorrectAnswer(1);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ValidateGameOverScore("1");
+    }
+
+    private int GetEmployeeImgVwResId(int index)
     {
         switch (index)
         {
@@ -330,27 +432,103 @@ public class GameplayFragmentTest
         }
     }
 
-    private void LoseGame(int randomEmployeeIndex)
+    private int GetResultVwResIdFromSelectedIndex(int index)
+    {
+        switch (index)
+        {
+            case 0:
+
+                return R.id.resultView1;
+
+            case 1:
+
+                return R.id.resultView2;
+
+            case 2:
+
+                return R.id.resultView3;
+
+            case 3:
+
+                return R.id.resultView4;
+
+            case 4:
+
+                return R.id.resultView5;
+
+            default:
+
+                return R.id.resultView6;
+        }
+    }
+
+    private int GetResultVwResIdFromSelectedResId(int resId)
+    {
+        switch (resId)
+        {
+            case R.id.employeeImage:
+
+                return R.id.resultView1;
+
+            case R.id.employeeImage2:
+
+                return R.id.resultView2;
+
+            case R.id.employeeImage3:
+
+                return R.id.resultView3;
+
+            case R.id.employeeImage4:
+
+                return R.id.resultView4;
+
+            case R.id.employeeImage5:
+
+                return R.id.resultView5;
+
+            default:
+
+                return R.id.resultView6;
+        }
+    }
+
+    /**
+     *
+     * @return Selected view res Id
+     */
+    private int LoseGame(int randomEmployeeIndex)
     {
         int resId = randomEmployeeIndex == 0 ? R.id.employeeImage2 :R.id.employeeImage;
 
         onView(withId(resId)).perform(click());
+
+        return resId;
     }
 
-    private void SelectCorrectAnswer(int correctCount)
+    /**
+     *
+     * @param correctCount How many times should select the correct answer
+     *
+     * @return The index of the last correct answer
+     */
+    private int SelectCorrectAnswer(int correctCount)
     {
+        int selectedIndex = 0;
+
         while (correctCount > 0)
         {
             correctCount--;
 
             EmployeeInfo randomEmployee = employeeViewModel.GetRandomEmployee();
 
-            int selectedIndex = employeeViewModel.GetRandomListOf6().indexOf(randomEmployee);
+            selectedIndex = employeeViewModel.GetRandomListOf6().indexOf(randomEmployee);
 
-            onView(withId(GetImgVwResId(selectedIndex))).perform(click());
+            onView(withId(GetEmployeeImgVwResId(selectedIndex))).perform(click());
 
             WaitToFinish();
         }
+
+        return selectedIndex;
     }
 
     private void WaitForDataAndClickMode(@IdRes int id)
@@ -382,6 +560,8 @@ public class GameplayFragmentTest
 
     private void ReturnToMainMenuAndVerifyIsVisible(MainActivity activity)
     {
+        WaitToFinish();
+
         final int ALERT_DIALOG_BTN_ID = activity.getResources()
                                                 .getIdentifier
                                                         (
@@ -401,6 +581,8 @@ public class GameplayFragmentTest
 
     private void ReturnToMainMenu(MainActivity activity)
     {
+        WaitToFinish();
+
         final int ALERT_DIALOG_BTN_ID = activity.getResources()
                                                 .getIdentifier
                                                         (
@@ -415,4 +597,35 @@ public class GameplayFragmentTest
 
         WaitToFinish();
     }
+
+    /**
+     *
+     * @param expectedValue Two valid values are "N" (N = final score) and "N/N2" (N = final score, N2 = attempts)
+     */
+    private void ValidateGameOverScore(String expectedValue)
+    {
+        WaitToFinish();
+
+        final int ALERT_DIALOG_TXT_VW_ID = activity.getResources()
+                                                   .getIdentifier
+                                                           (
+                                                                   "16908299",
+                                                                   "id",
+                                                                   InstrumentationRegistry.getInstrumentation()
+                                                                                          .getTargetContext()
+                                                                                          .getPackageName()
+                                                           );
+
+        onView(withId(ALERT_DIALOG_TXT_VW_ID)).check
+                (
+                        matches
+                                (
+                                        withText
+                                                (
+                                                        String.format("%s %s", activity.getText(R.string.gameOverBodyTxt), expectedValue)
+                                                )
+                                )
+                );
+    }
+
 }

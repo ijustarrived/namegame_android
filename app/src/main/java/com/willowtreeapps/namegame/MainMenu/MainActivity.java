@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.willowtreeapps.namegame.Gameplay.GameplayViewModule;
 import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeViewModel;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
 import com.willowtreeapps.namegame.MainMenu.Singleton.ListRandomizerInstance;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
             APPLICATION.GetMainMenuViewModel().SetListRandomizer(ListRandomizerInstance.GetInstance(null));
 
             APPLICATION.SetEmployeeViewModel(ViewModelProviders.of(this).get(EmployeeViewModel.class));
+
+            APPLICATION.SetGameplayViewModule(ViewModelProviders.of(this).get(GameplayViewModule.class));
 
             APPLICATION.GetFrag()
                        .Replace(R.id.fragmentContainer, MainMenuFragment.newInstance(), MainMenuFragment.TAG, false);

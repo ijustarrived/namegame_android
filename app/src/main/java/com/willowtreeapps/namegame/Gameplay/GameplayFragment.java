@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,22 +35,25 @@ import java.util.List;
 public class GameplayFragment extends Fragment
 {
     public static final String TAG = "GameplayFragment",
-    GAME_OVER_KEY = "GAME_OVER_KEY";
+            GAME_OVER_KEY = "GAME_OVER_KEY",
+            CORRECT_COUNTER_KEY = "CORRECT_COUNTER_KEY",
+            ATTEMPTS_COUNTER_KEY = "ATTEMPTS_COUNTER_KEY";
 
     private AppCompatActivity currentActivity;
 
-    private List<ImageView> employeeImgVws = new ArrayList<>(),
-    resultImgVws = new ArrayList<>();
+    private List<ImageView> employeeImgVws = new ArrayList<>();
 
-    //private Picasso picasso;
+    private List<View> resultImgVws = new ArrayList<>();
 
     private int gameplayMode = 0,
-            triesCounter = 1,
-    correctCounter = 0;
+            attemptsCounter = 0,
+            correctCounter = 0;
 
     private EmployeeViewModel employeeViewModel;
 
     private MainMenuViewModel mainMenuViewModel;
+
+    private GameplayViewModule gameplayViewModule;
 
     public static GameplayFragment newInstance(Bundle args)
     {
@@ -79,7 +83,9 @@ public class GameplayFragment extends Fragment
 
         employeeViewModel = NameGameApplication.get(currentActivity).GetEmployeeViewModel();
 
-        //region Get all imgVws
+        gameplayViewModule = NameGameApplication.get(currentActivity).GetGameplayViewModule();
+
+        //region Get all Views
 
         //region Employees
 
@@ -165,7 +171,6 @@ public class GameplayFragment extends Fragment
             default:
 
                 break;
-
         }
 
         final EmployeeInfo RANDOM_EMPLOYEE = employeeViewModel.GetRandomEmployee();
@@ -175,21 +180,31 @@ public class GameplayFragment extends Fragment
                         String.format("%s %s", RANDOM_EMPLOYEE.GetFirstName(), RANDOM_EMPLOYEE.GetLastName())
                 );
 
-            SetData(Picasso.get(), RANDOM_EMPLOYEE, employeeViewModel.GetRandomListOf6(), currentActivity, employeeImgVws);
+        SetData(Picasso.get(), RANDOM_EMPLOYEE, employeeViewModel.GetRandomListOf6(), currentActivity, employeeImgVws, resultImgVws);
 
-            if(savedInstanceState != null && savedInstanceState.getBoolean(GAME_OVER_KEY))
+        if(savedInstanceState != null)
+        {
+            if(savedInstanceState.getBoolean(GAME_OVER_KEY))
             {
                 CreateGameOverDialog(currentActivity);
 
                 alertDialog.show();
             }
+
+            attemptsCounter = savedInstanceState.getInt(ATTEMPTS_COUNTER_KEY, 1);
+
+            correctCounter = savedInstanceState.getInt(CORRECT_COUNTER_KEY, 0);
+        }
     }
 
-    private void SetData(Picasso picasso, EmployeeInfo randomEmployee, List<EmployeeInfo> randomEmployees, FragmentActivity activity, List<ImageView> employeeImgVws)
+    /**
+     * Used to increase wait time between rounds.
+     */
+    private Handler waitForAnswerHandler;
+
+    private void SetData(Picasso picasso, EmployeeInfo randomEmployee, List<EmployeeInfo> randomEmployees, FragmentActivity activity, List<ImageView> employeeImgVws, List<View> resultVws)
     {
-        //The only instance it will be null is if the orientation changes
-       if(alertDialog == null)
-           CreateGameOverDialog(activity);
+        waitForAnswerHandler = new Handler();
 
         for (int i = 0; i < randomEmployees.size(); i++)
         {
@@ -202,52 +217,84 @@ public class GameplayFragment extends Fragment
                 @Override
                 public void onClick(View view)
                 {
-                    triesCounter++;
+                    attemptsCounter++;
 
-                    if(employeeImgVws.get(randomEmployees.indexOf(randomEmployee)).getId() == view.getId())
+                    final int CORRECT_EMPLOYEE_INDEX = randomEmployees.indexOf(randomEmployee);
+
+                    final View RESULT_VW = resultVws.get(employeeImgVws.indexOf(view));
+
+                    RESULT_VW.setVisibility(View.VISIBLE);
+
+                    if(employeeImgVws.get(CORRECT_EMPLOYEE_INDEX).getId() == view.getId())
                     {
                         correctCounter++;
 
-                        List<EmployeeInfo> newRandomList = new ArrayList<>();
+                        RESULT_VW.setBackgroundResource(R.drawable.correct_vector);
 
-                        EmployeeInfo newRandomEmployee = new EmployeeInfo("", "", "", new HeadshotInfo("", "", "", ""));
-
-                        try
+                        waitForAnswerHandler.postDelayed(new Runnable()
                         {
-                            newRandomList = employeeViewModel.GenerateNewRandomListOf6(employeeViewModel.GetAllEmployees(), mainMenuViewModel.GetListRandomizer());
+                            @Override
+                            public void run()
+                            {
+                                List<EmployeeInfo> newRandomList = new ArrayList<>();
 
-                            newRandomEmployee = employeeViewModel.PickRandomEmployee(newRandomList, mainMenuViewModel.GetListRandomizer());
-                        }
+                                EmployeeInfo newRandomEmployee = new EmployeeInfo("", "", "", new HeadshotInfo("", "", "", ""));
 
-                        catch (Exception ignore)
-                        {
-                        }
+                                try
+                                {
+                                    newRandomList = employeeViewModel.GenerateNewRandomListOf6(employeeViewModel.GetAllEmployees(), mainMenuViewModel.GetListRandomizer());
 
-                        if(!newRandomEmployee.GetId().isEmpty())
-                            SetData(picasso, newRandomEmployee, newRandomList, activity, employeeImgVws);
+                                    newRandomEmployee = employeeViewModel.PickRandomEmployee(newRandomList, mainMenuViewModel.GetListRandomizer());
+                                }
 
-                        else
-                            Toast.makeText(activity, activity.getText(R.string.randomizeEmployeesErrorMsg), Toast.LENGTH_LONG)
-                                 .show();
+                                catch (Exception ignore)
+                                {
+                                }
+
+                                if(!newRandomEmployee.GetId().isEmpty())
+                                {
+                                    SetData(picasso, newRandomEmployee, newRandomList, activity, employeeImgVws, resultVws);
+
+                                    RESULT_VW.setBackgroundResource(0);
+
+                                    RESULT_VW.setVisibility(View.GONE);
+                                }
+
+                                else
+                                    Toast.makeText(activity, activity.getText(R.string.randomizeEmployeesErrorMsg), Toast.LENGTH_LONG)
+                                         .show();
+                            }
+                        }, gameplayViewModule.getAnswerHandlerDelay());
                     }
 
                     else
                     {
-                        switch (gameplayMode)
+                        RESULT_VW.setBackgroundResource(R.drawable.incorrect_vector);
+
+                        waitForAnswerHandler.postDelayed(new Runnable()
                         {
-                            case GameplayDef.Mode.PRACTICE:
+                            @Override
+                            public void run()
+                            {
+                                switch (gameplayMode)
+                                {
+                                    case GameplayDef.Mode.PRACTICE:
 
-                                //ALERT_DIALOG.show();
+                                        //The only instance it will be null is if the orientation changes
+                                        if(alertDialog == null)
+                                            CreateGameOverDialog(activity);
 
-                                alertDialog.show();
+                                        alertDialog.show();
 
-                                break;
+                                        break;
 
-                            case GameplayDef.Mode.TIMED:
+                                    case GameplayDef.Mode.TIMED:
 
-                                break;
+                                        break;
 
-                        }
+                                }
+                            }
+                        }, gameplayViewModule.getAnswerHandlerDelay());
                     }
                 }
             });
@@ -271,7 +318,7 @@ public class GameplayFragment extends Fragment
 
         alertDialog = new AlertDialog.Builder(activity)
                 .setTitle(activity.getText(R.string.gameOverTitleTxt))
-                .setMessage(gameplayMode == GameplayDef.Mode.PRACTICE ? String.format("%s %s", ALERT_MSG, correctCounter ): ALERT_MSG + String.format(" %s/%s", correctCounter, triesCounter))
+                .setMessage(gameplayMode == GameplayDef.Mode.PRACTICE ? String.format("%s %s", ALERT_MSG, correctCounter ): ALERT_MSG + String.format(" %s/%s", correctCounter, attemptsCounter))
                 .setPositiveButton(activity.getText(R.string.gameOverBtnTxt), new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -286,7 +333,12 @@ public class GameplayFragment extends Fragment
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState)
     {
-        outState.putBoolean(GAME_OVER_KEY, alertDialog.isShowing());
+        outState.putInt(ATTEMPTS_COUNTER_KEY, attemptsCounter);
+
+        outState.putInt(CORRECT_COUNTER_KEY, correctCounter);
+
+        if(alertDialog != null)
+            outState.putBoolean(GAME_OVER_KEY, alertDialog.isShowing());
 
         super.onSaveInstanceState(outState);
     }

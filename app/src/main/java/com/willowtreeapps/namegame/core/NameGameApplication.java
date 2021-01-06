@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import androidx.annotation.NonNull;
 
+import com.willowtreeapps.namegame.Gameplay.GameplayViewModule;
 import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeViewModel;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
 import com.willowtreeapps.namegame.network.NetworkModule;
@@ -43,6 +44,8 @@ public class NameGameApplication extends Application {
 
     private EmployeeViewModel employeeViewModel;
 
+    private GameplayViewModule gameplayViewModule;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -68,5 +71,15 @@ public class NameGameApplication extends Application {
     public void SetEmployeeViewModel(EmployeeViewModel employeeViewModel)
     {
         this.employeeViewModel = employeeViewModel;
+    }
+
+    public GameplayViewModule GetGameplayViewModule()
+    {
+        return gameplayViewModule;
+    }
+
+    public void SetGameplayViewModule(GameplayViewModule gameplayViewModule)
+    {
+        this.gameplayViewModule = gameplayViewModule;
     }
 }
