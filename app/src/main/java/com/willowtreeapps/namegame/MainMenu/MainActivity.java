@@ -15,29 +15,27 @@ import com.willowtreeapps.namegame.MainMenu.FragHelper.FragHelper;
 
 public class MainActivity extends AppCompatActivity {
 
-    private NameGameApplication application;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.name_game_activity);
 
-        application = NameGameApplication.get(this);
+        final NameGameApplication APPLICATION = NameGameApplication.get(this);
 
-        application.component().inject(this);
+        APPLICATION.component().inject(this);
 
-        application.SetFrag(new FragHelper(getSupportFragmentManager()));
+        APPLICATION.SetFrag(new FragHelper(getSupportFragmentManager()));
 
         //Run only once
         if(savedInstanceState == null)
         {
-            application.SetMainMenuViewModel(ViewModelProviders.of(this).get(MainMenuViewModel.class));
+            APPLICATION.SetMainMenuViewModel(ViewModelProviders.of(this).get(MainMenuViewModel.class));
 
-            application.GetMainMenuViewModel().SetListRandomizer(ListRandomizerInstance.GetInstance(null));
+            APPLICATION.GetMainMenuViewModel().SetListRandomizer(ListRandomizerInstance.GetInstance(null));
 
-            application.SetEmployeeViewModel(ViewModelProviders.of(this).get(EmployeeViewModel.class));
+            APPLICATION.SetEmployeeViewModel(ViewModelProviders.of(this).get(EmployeeViewModel.class));
 
-            application.GetFrag()
+            APPLICATION.GetFrag()
                        .Replace(R.id.fragmentContainer, MainMenuFragment.newInstance(), MainMenuFragment.TAG, false);
         }
     }

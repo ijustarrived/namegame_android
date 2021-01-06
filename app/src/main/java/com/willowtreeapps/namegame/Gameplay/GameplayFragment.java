@@ -1,7 +1,6 @@
 package com.willowtreeapps.namegame.Gameplay;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,7 +33,8 @@ import java.util.List;
 
 public class GameplayFragment extends Fragment
 {
-    public static final String TAG = "GameplayFragment";
+    public static final String TAG = "GameplayFragment",
+    GAME_OVER_KEY = "GAME_OVER_KEY";
 
     private AppCompatActivity currentActivity;
 
@@ -175,26 +175,21 @@ public class GameplayFragment extends Fragment
                         String.format("%s %s", RANDOM_EMPLOYEE.GetFirstName(), RANDOM_EMPLOYEE.GetLastName())
                 );
 
-        SetData(Picasso.get(), RANDOM_EMPLOYEE, employeeViewModel.GetRandomListOf6(), currentActivity, employeeImgVws);
+            SetData(Picasso.get(), RANDOM_EMPLOYEE, employeeViewModel.GetRandomListOf6(), currentActivity, employeeImgVws);
+
+            if(savedInstanceState != null && savedInstanceState.getBoolean(GAME_OVER_KEY))
+            {
+                CreateGameOverDialog(currentActivity);
+
+                alertDialog.show();
+            }
     }
 
     private void SetData(Picasso picasso, EmployeeInfo randomEmployee, List<EmployeeInfo> randomEmployees, FragmentActivity activity, List<ImageView> employeeImgVws)
     {
-        String ALERT_MSG = activity.getText(R.string.gameOverBodyTxt).toString();
-
-        final AlertDialog ALERT_DIALOG = new AlertDialog.Builder(activity)
-                .setTitle(activity.getText(R.string.gameOverTitleTxt))
-                .setMessage(gameplayMode == GameplayDef.Mode.PRACTICE ? String.format("%s %s", ALERT_MSG, correctCounter ): ALERT_MSG + String.format(" %s/%s", correctCounter, triesCounter))
-                .setCancelable(true)
-                .setPositiveButton(activity.getText(R.string.gameOverBtnTxt), new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        activity.onBackPressed();
-                    }
-                })
-                .create();
+        //The only instance it will be null is if the orientation changes
+       if(alertDialog == null)
+           CreateGameOverDialog(activity);
 
         for (int i = 0; i < randomEmployees.size(); i++)
         {
@@ -242,7 +237,9 @@ public class GameplayFragment extends Fragment
                         {
                             case GameplayDef.Mode.PRACTICE:
 
-                                ALERT_DIALOG.show();
+                                //ALERT_DIALOG.show();
+
+                                alertDialog.show();
 
                                 break;
 
@@ -264,5 +261,33 @@ public class GameplayFragment extends Fragment
                    .error(R.drawable.error_ic)
                    .into(IMG_VW);
         }
+    }
+
+    private AlertDialog alertDialog;
+
+    private void CreateGameOverDialog(FragmentActivity activity)
+    {
+        final String ALERT_MSG = activity.getText(R.string.gameOverBodyTxt).toString();
+
+        alertDialog = new AlertDialog.Builder(activity)
+                .setTitle(activity.getText(R.string.gameOverTitleTxt))
+                .setMessage(gameplayMode == GameplayDef.Mode.PRACTICE ? String.format("%s %s", ALERT_MSG, correctCounter ): ALERT_MSG + String.format(" %s/%s", correctCounter, triesCounter))
+                .setPositiveButton(activity.getText(R.string.gameOverBtnTxt), new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        activity.onBackPressed();
+                    }
+                })
+                .create();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState)
+    {
+        outState.putBoolean(GAME_OVER_KEY, alertDialog.isShowing());
+
+        super.onSaveInstanceState(outState);
     }
 }

@@ -1,5 +1,7 @@
 package com.willowtreeapps.namegame.Gameplay;
 
+import android.content.pm.ActivityInfo;
+
 import androidx.annotation.IdRes;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -42,26 +44,6 @@ public class GameplayFragmentTest
                 GetEmployeeViewModel();
     }
 
-    private void WaitForDataAndClickMode(@IdRes int id)
-    {
-        WaitToFinish();
-
-        onView(withId(id)).perform(click());
-    }
-
-    private void WaitToFinish()
-    {
-        try
-        {
-            Thread.sleep(1000);
-        }
-
-        catch (InterruptedException e)
-        {
-            throw new AssertionError(e.getMessage());
-        }
-    }
-
     //Must comment the error and placeholder options of the picasso load or this test might pass with erroneous results.
     @Test
     public void VerifyIfImageWasLoadedAfterGameStartedTest()
@@ -92,7 +74,9 @@ public class GameplayFragmentTest
         //Wait for picasso loader to finish
         WaitToFinish();
 
-        LoseGameAndVerifyDialogIsVisible(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        onView(withText(R.string.gameOverTitleTxt)).inRoot(isDialog()).check(matches(isDisplayed()));
     }
 
     @Test
@@ -131,7 +115,7 @@ public class GameplayFragmentTest
 
         SelectCorrectAnswer(1);
 
-        LoseGameAndVerifyDialogIsVisible(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
     }
 
     @Test
@@ -144,7 +128,7 @@ public class GameplayFragmentTest
 
         SelectCorrectAnswer(1);
 
-        LoseGameAndVerifyDialogIsVisible(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
 
         //16908299
         final int ALERT_DIALOG_TXT_VW_ID = activity.getResources()
@@ -179,23 +163,141 @@ public class GameplayFragmentTest
 
         SelectCorrectAnswer(1);
 
-        LoseGameAndVerifyDialogIsVisible(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
 
-        final int ALERT_DIALOG_BTN_ID = activity.getResources()
-                                                   .getIdentifier
-                                                           (
-                                                                   "16908313",
-                                                                   "id",
-                                                                   InstrumentationRegistry.getInstrumentation()
-                                                                                          .getTargetContext()
-                                                                                          .getPackageName()
-                                                           );
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
 
-        onView(withId(ALERT_DIALOG_BTN_ID)).perform(click());
+    @Test
+    public void ChangeToLandscapeAndLosePracticeModeAndReturnToMainMenuTest()
+    {
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
         WaitToFinish();
 
-        onView(withId(R.id.practiceModeBtn)).check(matches(isDisplayed()));
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
+    public void StartPracticeModeAndChangeToLandscapeAndLoseAndReturnToMainMenuTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
+    public void ChangeToLandscapeAndBackToPortAndLosePracticeModeAndReturnToMainMenuTest()
+    {
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
+    public void StartPracticeModeAndChangeToLandAndBackToPortAndLoseAndReturnToMainMenuTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
+    public void LosePracticeModeAndChangeToLandAndReturnToMainMenuTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
+    public void LosePracticeModeAndChangeToLandAndBackToPortAndReturnToMainMenuTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
+    public void LosePracticeModeAndReturnToMainMenuAndChangeToLandAndStartPracticeModeTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ReturnToMainMenu(activity);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        VerifyIfEmployeeFullNameWasSetAfterGameLoadedTest();
+    }
+
+    @Test
+    public void LosePracticeModeAndReturnToMainMenuAndChangeToLandAndBackToPortAndStartPracticeModeTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ReturnToMainMenu(activity);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        VerifyIfEmployeeFullNameWasSetAfterGameLoadedTest();
     }
 
     private int GetImgVwResId(int index)
@@ -228,13 +330,11 @@ public class GameplayFragmentTest
         }
     }
 
-    private void LoseGameAndVerifyDialogIsVisible(int randomEmployeeIndex)
+    private void LoseGame(int randomEmployeeIndex)
     {
         int resId = randomEmployeeIndex == 0 ? R.id.employeeImage2 :R.id.employeeImage;
 
         onView(withId(resId)).perform(click());
-
-        onView(withText(R.string.gameOverTitleTxt)).inRoot(isDialog()).check(matches(isDisplayed()));
     }
 
     private void SelectCorrectAnswer(int correctCount)
@@ -251,5 +351,68 @@ public class GameplayFragmentTest
 
             WaitToFinish();
         }
+    }
+
+    private void WaitForDataAndClickMode(@IdRes int id)
+    {
+        WaitToFinish();
+
+        onView(withId(id)).perform(click());
+    }
+
+    private void WaitToFinish()
+    {
+        try
+        {
+            Thread.sleep(1000);
+        }
+
+        catch (InterruptedException e)
+        {
+            throw new AssertionError(e.getMessage());
+        }
+    }
+
+    private void ChangeOrientationTo(MainActivity activity, int orientation)
+    {
+        activity.setRequestedOrientation(orientation);
+
+        WaitToFinish();
+    }
+
+    private void ReturnToMainMenuAndVerifyIsVisible(MainActivity activity)
+    {
+        final int ALERT_DIALOG_BTN_ID = activity.getResources()
+                                                .getIdentifier
+                                                        (
+                                                                "16908313",
+                                                                "id",
+                                                                InstrumentationRegistry.getInstrumentation()
+                                                                                       .getTargetContext()
+                                                                                       .getPackageName()
+                                                        );
+
+        onView(withId(ALERT_DIALOG_BTN_ID)).perform(click());
+
+        WaitToFinish();
+
+        onView(withId(R.id.practiceModeBtn)).check(matches(isDisplayed()));
+    }
+
+    private void ReturnToMainMenu(MainActivity activity)
+    {
+        final int ALERT_DIALOG_BTN_ID = activity.getResources()
+                                                .getIdentifier
+                                                        (
+                                                                "16908313",
+                                                                "id",
+                                                                InstrumentationRegistry.getInstrumentation()
+                                                                                       .getTargetContext()
+                                                                                       .getPackageName()
+                                                        );
+
+        onView(withId(ALERT_DIALOG_BTN_ID)).perform(click());
+
+        WaitToFinish();
     }
 }
