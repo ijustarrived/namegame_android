@@ -1,7 +1,5 @@
 package com.willowtreeapps.namegame.Gameplay;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -16,11 +14,9 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,6 +24,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.willowtreeapps.namegame.Gameplay.Pojo.EmployeeInfo;
+import com.willowtreeapps.namegame.Gameplay.Pojo.GameplayViewModel;
 import com.willowtreeapps.namegame.Gameplay.Pojo.HeadshotInfo;
 import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeViewModel;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
@@ -43,7 +40,8 @@ public class GameplayFragment extends Fragment
     public static final String TAG = "GameplayFragment",
             GAME_OVER_KEY = "GAME_OVER_KEY",
             CORRECT_COUNTER_KEY = "CORRECT_COUNTER_KEY",
-            ATTEMPTS_COUNTER_KEY = "ATTEMPTS_COUNTER_KEY";
+            ATTEMPTS_COUNTER_KEY = "ATTEMPTS_COUNTER_KEY",
+            PROGRESSBAR_KEY = "PROGRESSBAR_KEY";
 
     private AppCompatActivity currentActivity;
 
@@ -59,14 +57,20 @@ public class GameplayFragment extends Fragment
 
     private MainMenuViewModel mainMenuViewModel;
 
+    private GameplayViewModel gameplayViewModel;
+
     private ProgressBar progressBar;
 
-    CountDownTimer countDownTimer;
+    private static final short ANSWER_HANDLER_DELAY = 1000;
 
-    private static final short ANSWER_HANDLER_DELAY = /*1000*/3000;
-
-    public static final long TIMED_MODE_DURATION = /*30000*/ 5000,
+    private static final long DEFAULT_TIMED_MODE_DURATION = /*30000*/ 5000,
     TIME_MODE_TICK_INTERVAL = 1000;
+
+    private long countdownDuration = 0;
+
+    private CountDownTimer countDownTimer;
+
+    private TextView employeeNameTxtVw;
 
     public static GameplayFragment newInstance(Bundle args)
     {
@@ -95,6 +99,8 @@ public class GameplayFragment extends Fragment
         mainMenuViewModel = NameGameApplication.get(currentActivity).GetMainMenuViewModel();
 
         employeeViewModel = NameGameApplication.get(currentActivity).GetEmployeeViewModel();
+
+        gameplayViewModel = NameGameApplication.get(currentActivity).GetGameplayViewModel();
 
         //region Get all Views
 
@@ -165,6 +171,25 @@ public class GameplayFragment extends Fragment
 
         //endregion
 
+        if(savedInstanceState != null)
+        {
+            if(savedInstanceState.getBoolean(GAME_OVER_KEY))
+            {
+                CreateGameOverDialog(currentActivity);
+
+                alertDialog.show();
+            }
+
+            attemptsCounter = savedInstanceState.getInt(ATTEMPTS_COUNTER_KEY, 1);
+
+            correctCounter = savedInstanceState.getInt(CORRECT_COUNTER_KEY, 0);
+
+            progressBar.setProgress(savedInstanceState.getInt(PROGRESSBAR_KEY, 100));
+        }
+
+        else
+            gameplayViewModel.setTimeModeDuration(DEFAULT_TIMED_MODE_DURATION);
+
         switch (gameplayMode)
         {
             case GameplayDef.Mode.PRACTICE:
@@ -178,23 +203,30 @@ public class GameplayFragment extends Fragment
 
                 progressBar.setVisibility(View.VISIBLE);
 
+                countdownDuration = gameplayViewModel.getTimeModeDuration();
+
                 TOOLBAR.setTitle(currentActivity.getResources()
                                                 .getText(R.string.timedModeBtnTxt));
 
-                countDownTimer = new CountDownTimer(TIMED_MODE_DURATION, TIME_MODE_TICK_INTERVAL)
+                countDownTimer = new CountDownTimer(countdownDuration, TIME_MODE_TICK_INTERVAL)
                 {
                     @Override
                     public void onTick(long l)
                     {
-                        progressBar.setProgress((int)(((1.0 * l) / TIMED_MODE_DURATION) * 100));
+                        gameplayViewModel.setTimeModeDuration(l);
+
+                        //1.0 * l = converts to floating point value. *100 = converts decimal value to an integer value.
+                        progressBar.setProgress((int) (((1.0 * l) / countdownDuration) * 100));
                     }
 
                     @Override
                     public void onFinish()
                     {
+                        gameplayViewModel.setTimeModeDuration(DEFAULT_TIMED_MODE_DURATION);
+
                         progressBar.setProgress(0);
 
-                        if(alertDialog == null)
+                        if (alertDialog == null)
                             CreateGameOverDialog(currentActivity);
 
                         alertDialog.show();
@@ -211,20 +243,6 @@ public class GameplayFragment extends Fragment
         }
 
         SetData(Picasso.get(), employeeViewModel.GetRandomEmployee(), employeeViewModel.GetRandomListOf6(), currentActivity, employeeImgVws, resultImgVws);
-
-        if(savedInstanceState != null)
-        {
-            if(savedInstanceState.getBoolean(GAME_OVER_KEY))
-            {
-                CreateGameOverDialog(currentActivity);
-
-                alertDialog.show();
-            }
-
-            attemptsCounter = savedInstanceState.getInt(ATTEMPTS_COUNTER_KEY, 1);
-
-            correctCounter = savedInstanceState.getInt(CORRECT_COUNTER_KEY, 0);
-        }
     }
 
     /**
@@ -236,10 +254,10 @@ public class GameplayFragment extends Fragment
     {
         waitForAnswerHandler = new Handler();
 
-        ((TextView)(activity.findViewById(R.id.employeeName))).setText
-            (
-                    String.format("%s %s", randomEmployee.GetFirstName(), randomEmployee.GetLastName())
-            );
+        ((TextView) activity.findViewById(R.id.employeeName)).setText
+                (
+                        String.format("%s %s", randomEmployee.GetFirstName(), randomEmployee.GetLastName())
+                );
 
         for (int i = 0; i < randomEmployees.size(); i++)
         {
@@ -260,6 +278,7 @@ public class GameplayFragment extends Fragment
 
                     RESULT_VW.setVisibility(View.VISIBLE);
 
+                    //Correct answer
                     if(employeeImgVws.get(CORRECT_EMPLOYEE_INDEX).getId() == view.getId())
                     {
                         correctCounter++;
@@ -271,39 +290,13 @@ public class GameplayFragment extends Fragment
                             @Override
                             public void run()
                             {
-                                LoadNextRound(picasso, activity, employeeImgVws, resultVws, RESULT_VW);
-
-                                /*List<EmployeeInfo> newRandomList = new ArrayList<>();
-
-                                EmployeeInfo newRandomEmployee = new EmployeeInfo("", "", "", new HeadshotInfo("", "", "", ""));
-
-                                try
-                                {
-                                    newRandomList = employeeViewModel.GenerateNewRandomListOf6(employeeViewModel.GetAllEmployees(), mainMenuViewModel.GetListRandomizer());
-
-                                    newRandomEmployee = employeeViewModel.PickRandomEmployee(newRandomList, mainMenuViewModel.GetListRandomizer());
-                                }
-
-                                catch (Exception ignore)
-                                {
-                                }
-
-                                if(!newRandomEmployee.GetId().isEmpty())
-                                {
-                                    SetData(picasso, newRandomEmployee, newRandomList, activity, employeeImgVws, resultVws);
-
-                                    RESULT_VW.setBackgroundResource(0);
-
-                                    RESULT_VW.setVisibility(View.GONE);
-                                }
-
-                                else
-                                    Toast.makeText(activity, activity.getText(R.string.randomizeEmployeesErrorMsg), Toast.LENGTH_LONG)
-                                         .show();*/
+                                if(progressBar.getProgress() > 10)
+                                    LoadNextRound(picasso, activity, employeeImgVws, resultVws, RESULT_VW);
                             }
                         }, ANSWER_HANDLER_DELAY);
                     }
 
+                    //Incorrect answer
                     else
                     {
                         RESULT_VW.setBackgroundResource(R.drawable.incorrect_vector);
@@ -313,25 +306,16 @@ public class GameplayFragment extends Fragment
                             @Override
                             public void run()
                             {
-                                switch (gameplayMode)
+                                if (gameplayMode == GameplayDef.Mode.PRACTICE)
                                 {
-                                    case GameplayDef.Mode.PRACTICE:
+                                    //The only instance it will be null is if the orientation changes
+                                    if (alertDialog == null)
+                                        CreateGameOverDialog(activity);
 
-                                        //The only instance it will be null is if the orientation changes
-                                        if(alertDialog == null)
-                                            CreateGameOverDialog(activity);
-
-                                        alertDialog.show();
-
-                                        break;
-
-                                    default:
-
-                                        LoadNextRound(picasso, activity, employeeImgVws, resultVws, RESULT_VW);
-
-                                        break;
-
+                                    alertDialog.show();
                                 }
+                                else
+                                    LoadNextRound(picasso, activity, employeeImgVws, resultVws, RESULT_VW);
                             }
                         }, ANSWER_HANDLER_DELAY);
                     }
@@ -372,6 +356,11 @@ public class GameplayFragment extends Fragment
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState)
     {
+        if(countDownTimer != null)
+            countDownTimer.cancel();
+
+        outState.putInt(PROGRESSBAR_KEY, progressBar.getProgress());
+
         outState.putInt(ATTEMPTS_COUNTER_KEY, attemptsCounter);
 
         outState.putInt(CORRECT_COUNTER_KEY, correctCounter);

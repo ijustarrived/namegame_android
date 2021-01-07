@@ -7,6 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
 import com.willowtreeapps.namegame.Gameplay.Pojo.EmployeeInfo;
+import com.willowtreeapps.namegame.Gameplay.Pojo.GameplayViewModel;
 import com.willowtreeapps.namegame.MainMenu.MainActivity;
 import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeViewModel;
 import com.willowtreeapps.namegame.R;
@@ -18,7 +19,6 @@ import org.junit.Test;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -36,6 +36,8 @@ public class GameplayFragmentTest
 
     private EmployeeViewModel employeeViewModel;
 
+    private GameplayViewModel gameplayViewModel;
+
     @Before
     public void Init()
     {
@@ -43,6 +45,9 @@ public class GameplayFragmentTest
 
         employeeViewModel = NameGameApplication.get(activity).
                 GetEmployeeViewModel();
+
+        gameplayViewModel = NameGameApplication.get(activity).
+                GetGameplayViewModel();
     }
 
     //Must comment the error and placeholder options of the picasso load or this test might pass with erroneous results.
@@ -74,10 +79,6 @@ public class GameplayFragmentTest
         WaitForDataAndClickMode(R.id.timedModeBtn);
 
         ValidateRandomEmployeeFullName();
-
-        /*final EmployeeInfo RANDOM_EMPLOYEE = employeeViewModel.GetRandomEmployee();
-
-        onView(withId(R.id.employeeName)).check(matches(withText(String.format("%s %s", RANDOM_EMPLOYEE.GetFirstName(), RANDOM_EMPLOYEE.GetLastName()))));*/
     }
 
     @Test
@@ -114,10 +115,6 @@ public class GameplayFragmentTest
         WaitToFinish();
 
         ValidateGameOverInTimedMode();
-
-        /*WaitToFinish((int)GameplayFragment.TIMED_MODE_DURATION);
-
-        onView(withText(R.string.gameOverTitleTxt)).inRoot(isDialog()).check(matches(isDisplayed()));*/
     }
 
     @Test
@@ -334,7 +331,7 @@ public class GameplayFragmentTest
 
         SelectCorrectAnswer(1);
 
-        WaitToFinish((int)GameplayFragment.TIMED_MODE_DURATION);
+        WaitToFinish((int)gameplayViewModel.getTimeModeDuration());
     }
 
     @Test
@@ -408,7 +405,7 @@ public class GameplayFragmentTest
         //Wait for picasso loader to finish
         WaitToFinish();
 
-        WaitToFinish((int)GameplayFragment.TIMED_MODE_DURATION);
+        WaitToFinish((int)gameplayViewModel.getTimeModeDuration());
 
         ReturnToMainMenuAndVerifyIsVisible(activity);
     }
@@ -424,6 +421,21 @@ public class GameplayFragmentTest
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
+    public void StartTimedModeAndChangeToLandscapeAndLoseAndReturnToMainMenuTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
 
         ReturnToMainMenuAndVerifyIsVisible(activity);
     }
@@ -446,6 +458,23 @@ public class GameplayFragmentTest
     }
 
     @Test
+    public void ChangeToLandscapeAndBackToPortAndLoseTimedModeAndReturnToMainMenuTest()
+    {
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
     public void StartPracticeModeAndChangeToLandAndBackToPortAndLoseAndReturnToMainMenuTest()
     {
         WaitForDataAndClickMode(R.id.practiceModeBtn);
@@ -463,6 +492,23 @@ public class GameplayFragmentTest
     }
 
     @Test
+    public void StartTimedModeAndChangeToLandAndBackToPortAndLoseAndReturnToMainMenuTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
     public void LosePracticeModeAndChangeToLandAndReturnToMainMenuTest()
     {
         WaitForDataAndClickMode(R.id.practiceModeBtn);
@@ -471,6 +517,21 @@ public class GameplayFragmentTest
         WaitToFinish();
 
         LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
+    public void LoseTimedModeAndChangeToLandAndReturnToMainMenuTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
 
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
@@ -495,6 +556,23 @@ public class GameplayFragmentTest
     }
 
     @Test
+    public void LoseTimedModeAndChangeToLandAndBackToPortAndReturnToMainMenuTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
     public void LosePracticeModeAndReturnToMainMenuAndChangeToLandAndStartPracticeModeTest()
     {
         WaitForDataAndClickMode(R.id.practiceModeBtn);
@@ -509,6 +587,22 @@ public class GameplayFragmentTest
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         VerifyIfEmployeeFullNameWasSetAfterPracticeModeLoadedTest();
+    }
+    @Test
+    public void LoseTimedModeAndReturnToMainMenuAndChangeToLandAndStartTimedModeTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+
+        ReturnToMainMenu(activity);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        VerifyIfEmployeeFullNameWasSetAfterTimeModeLoadedTest();
     }
 
     @Test
@@ -531,6 +625,25 @@ public class GameplayFragmentTest
     }
 
     @Test
+    public void LoseTimedModeAndReturnToMainMenuAndChangeToLandAndBackToPortAndStartTimedModeTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+
+        ReturnToMainMenu(activity);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        VerifyIfEmployeeFullNameWasSetAfterTimeModeLoadedTest();
+    }
+
+    @Test
     public void PracticeModeAndSelectCorrectAndChangeToLandAndLoseAndValidateScoreTest()
     {
         WaitForDataAndClickMode(R.id.practiceModeBtn);
@@ -545,6 +658,23 @@ public class GameplayFragmentTest
         LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
 
         ValidateGameOverScore("1");
+    }
+
+    @Test
+    public void TimedModeAndSelectCorrectAndChangeToLandAndLoseAndValidateScoreTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        SelectCorrectAnswer(1);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+
+        ValidateGameOverScore("1/1");
     }
 
     @Test
@@ -564,6 +694,25 @@ public class GameplayFragmentTest
         LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
 
         ValidateGameOverScore("1");
+    }
+
+    @Test
+    public void TimedModeAndSelectCorrectAndChangeToLandAndBackToPortAndLoseAndValidateScoreTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        SelectCorrectAnswer(1);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+
+        ValidateGameOverScore("1/1");
     }
 
     private int GetEmployeeImgVwResId(int index)
@@ -814,7 +963,7 @@ public class GameplayFragmentTest
 
     private void ValidateGameOverInTimedMode()
     {
-        WaitToFinish((int)GameplayFragment.TIMED_MODE_DURATION);
+        WaitToFinish((int)gameplayViewModel.getTimeModeDuration());
 
         onView(withText(R.string.gameOverTitleTxt)).inRoot(isDialog()).check(matches(isDisplayed()));
     }
