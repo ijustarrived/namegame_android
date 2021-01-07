@@ -2,6 +2,7 @@ package com.willowtreeapps.namegame.Gameplay;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -257,9 +258,13 @@ public class GameplayFragment extends Fragment
     {
         waitForAnswerHandler = new Handler();
 
+        final String LAST_NAME = activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+                                 ? System.lineSeparator() + randomEmployee.GetLastName()
+                                 : randomEmployee.GetLastName();
+
         ((TextView) activity.findViewById(R.id.employeeName)).setText
                 (
-                        String.format("%s %s", randomEmployee.GetFirstName(), randomEmployee.GetLastName())
+                        String.format("%s %s", randomEmployee.GetFirstName(), LAST_NAME)
                 );
 
         for (int i = 0; i < randomEmployees.size(); i++)
