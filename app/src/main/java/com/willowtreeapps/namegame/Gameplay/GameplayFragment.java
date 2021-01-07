@@ -70,8 +70,6 @@ public class GameplayFragment extends Fragment
 
     private CountDownTimer countDownTimer;
 
-    private TextView employeeNameTxtVw;
-
     public static GameplayFragment newInstance(Bundle args)
     {
         GameplayFragment FRAGMENT = new GameplayFragment();
@@ -175,16 +173,19 @@ public class GameplayFragment extends Fragment
         {
             if(savedInstanceState.getBoolean(GAME_OVER_KEY))
             {
+                progressBar.setProgress(0);
+
                 CreateGameOverDialog(currentActivity);
 
                 alertDialog.show();
             }
 
+            else
+                progressBar.setProgress(savedInstanceState.getInt(PROGRESSBAR_KEY, 100));
+
             attemptsCounter = savedInstanceState.getInt(ATTEMPTS_COUNTER_KEY, 1);
 
             correctCounter = savedInstanceState.getInt(CORRECT_COUNTER_KEY, 0);
-
-            progressBar.setProgress(savedInstanceState.getInt(PROGRESSBAR_KEY, 100));
         }
 
         else
@@ -208,32 +209,34 @@ public class GameplayFragment extends Fragment
                 TOOLBAR.setTitle(currentActivity.getResources()
                                                 .getText(R.string.timedModeBtnTxt));
 
-                countDownTimer = new CountDownTimer(countdownDuration, TIME_MODE_TICK_INTERVAL)
+                //The only instance the progress will be 0 is if the orientation changed while it's game over
+                if(progressBar.getProgress() > 0)
                 {
-                    @Override
-                    public void onTick(long l)
+                    countDownTimer = new CountDownTimer(countdownDuration, TIME_MODE_TICK_INTERVAL)
                     {
-                        gameplayViewModel.setTimeModeDuration(l);
+                        @Override
+                        public void onTick(long l)
+                        {
+                            gameplayViewModel.setTimeModeDuration(l);
 
-                        //1.0 * l = converts to floating point value. *100 = converts decimal value to an integer value.
-                        progressBar.setProgress((int) (((1.0 * l) / countdownDuration) * 100));
-                    }
+                            //1.0 * l = converts to floating point value. *100 = converts decimal value to an integer value.
+                            progressBar.setProgress((int) (((1.0 * l) / countdownDuration) * 100));
+                        }
 
-                    @Override
-                    public void onFinish()
-                    {
-                        gameplayViewModel.setTimeModeDuration(DEFAULT_TIMED_MODE_DURATION);
+                        @Override
+                        public void onFinish()
+                        {
+                            progressBar.setProgress(0);
 
-                        progressBar.setProgress(0);
+                            if (alertDialog == null)
+                                CreateGameOverDialog(currentActivity);
 
-                        if (alertDialog == null)
-                            CreateGameOverDialog(currentActivity);
+                            alertDialog.show();
+                        }
+                    };
 
-                        alertDialog.show();
-                    }
-                };
-
-                countDownTimer.start();
+                    countDownTimer.start();
+                }
 
                 break;
 
@@ -347,6 +350,8 @@ public class GameplayFragment extends Fragment
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
+                        gameplayViewModel.setTimeModeDuration(DEFAULT_TIMED_MODE_DURATION);
+
                         activity.onBackPressed();
                     }
                 })
