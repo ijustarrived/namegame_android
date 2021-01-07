@@ -1,5 +1,7 @@
 package com.willowtreeapps.namegame.Gameplay;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -12,11 +14,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +59,14 @@ public class GameplayFragment extends Fragment
 
     private MainMenuViewModel mainMenuViewModel;
 
-    private GameplayViewModule gameplayViewModule;
+    private ProgressBar progressBar;
+
+    CountDownTimer countDownTimer;
+
+    private static final short ANSWER_HANDLER_DELAY = /*1000*/3000;
+
+    public static final long TIMED_MODE_DURATION = /*30000*/ 5000,
+    TIME_MODE_TICK_INTERVAL = 1000;
 
     public static GameplayFragment newInstance(Bundle args)
     {
@@ -83,9 +96,9 @@ public class GameplayFragment extends Fragment
 
         employeeViewModel = NameGameApplication.get(currentActivity).GetEmployeeViewModel();
 
-        gameplayViewModule = NameGameApplication.get(currentActivity).GetGameplayViewModule();
-
         //region Get all Views
+
+        progressBar = view.findViewById(R.id.toolbarProgress);
 
         //region Employees
 
@@ -163,8 +176,32 @@ public class GameplayFragment extends Fragment
 
             case GameplayDef.Mode.TIMED:
 
+                progressBar.setVisibility(View.VISIBLE);
+
                 TOOLBAR.setTitle(currentActivity.getResources()
                                                 .getText(R.string.timedModeBtnTxt));
+
+                countDownTimer = new CountDownTimer(TIMED_MODE_DURATION, TIME_MODE_TICK_INTERVAL)
+                {
+                    @Override
+                    public void onTick(long l)
+                    {
+                        progressBar.setProgress((int)(((1.0 * l) / TIMED_MODE_DURATION) * 100));
+                    }
+
+                    @Override
+                    public void onFinish()
+                    {
+                        progressBar.setProgress(0);
+
+                        if(alertDialog == null)
+                            CreateGameOverDialog(currentActivity);
+
+                        alertDialog.show();
+                    }
+                };
+
+                countDownTimer.start();
 
                 break;
 
@@ -173,14 +210,7 @@ public class GameplayFragment extends Fragment
                 break;
         }
 
-        final EmployeeInfo RANDOM_EMPLOYEE = employeeViewModel.GetRandomEmployee();
-
-        ((TextView)view.findViewById(R.id.employeeName)).setText
-                (
-                        String.format("%s %s", RANDOM_EMPLOYEE.GetFirstName(), RANDOM_EMPLOYEE.GetLastName())
-                );
-
-        SetData(Picasso.get(), RANDOM_EMPLOYEE, employeeViewModel.GetRandomListOf6(), currentActivity, employeeImgVws, resultImgVws);
+        SetData(Picasso.get(), employeeViewModel.GetRandomEmployee(), employeeViewModel.GetRandomListOf6(), currentActivity, employeeImgVws, resultImgVws);
 
         if(savedInstanceState != null)
         {
@@ -205,6 +235,11 @@ public class GameplayFragment extends Fragment
     private void SetData(Picasso picasso, EmployeeInfo randomEmployee, List<EmployeeInfo> randomEmployees, FragmentActivity activity, List<ImageView> employeeImgVws, List<View> resultVws)
     {
         waitForAnswerHandler = new Handler();
+
+        ((TextView)(activity.findViewById(R.id.employeeName))).setText
+            (
+                    String.format("%s %s", randomEmployee.GetFirstName(), randomEmployee.GetLastName())
+            );
 
         for (int i = 0; i < randomEmployees.size(); i++)
         {
@@ -236,7 +271,9 @@ public class GameplayFragment extends Fragment
                             @Override
                             public void run()
                             {
-                                List<EmployeeInfo> newRandomList = new ArrayList<>();
+                                LoadNextRound(picasso, activity, employeeImgVws, resultVws, RESULT_VW);
+
+                                /*List<EmployeeInfo> newRandomList = new ArrayList<>();
 
                                 EmployeeInfo newRandomEmployee = new EmployeeInfo("", "", "", new HeadshotInfo("", "", "", ""));
 
@@ -262,9 +299,9 @@ public class GameplayFragment extends Fragment
 
                                 else
                                     Toast.makeText(activity, activity.getText(R.string.randomizeEmployeesErrorMsg), Toast.LENGTH_LONG)
-                                         .show();
+                                         .show();*/
                             }
-                        }, gameplayViewModule.getAnswerHandlerDelay());
+                        }, ANSWER_HANDLER_DELAY);
                     }
 
                     else
@@ -288,13 +325,15 @@ public class GameplayFragment extends Fragment
 
                                         break;
 
-                                    case GameplayDef.Mode.TIMED:
+                                    default:
+
+                                        LoadNextRound(picasso, activity, employeeImgVws, resultVws, RESULT_VW);
 
                                         break;
 
                                 }
                             }
-                        }, gameplayViewModule.getAnswerHandlerDelay());
+                        }, ANSWER_HANDLER_DELAY);
                     }
                 }
             });
@@ -341,5 +380,36 @@ public class GameplayFragment extends Fragment
             outState.putBoolean(GAME_OVER_KEY, alertDialog.isShowing());
 
         super.onSaveInstanceState(outState);
+    }
+
+    private void LoadNextRound(Picasso picasso, FragmentActivity activity, List<ImageView> employeeImgVws, List<View> resultVws, View resultVw)
+    {
+        List<EmployeeInfo> newRandomList = new ArrayList<>();
+
+        EmployeeInfo newRandomEmployee = new EmployeeInfo("", "", "", new HeadshotInfo("", "", "", ""));
+
+        try
+        {
+            newRandomList = employeeViewModel.GenerateNewRandomListOf6(employeeViewModel.GetAllEmployees(), mainMenuViewModel.GetListRandomizer());
+
+            newRandomEmployee = employeeViewModel.PickRandomEmployee(newRandomList, mainMenuViewModel.GetListRandomizer());
+        }
+
+        catch (Exception ignore)
+        {
+        }
+
+        if(!newRandomEmployee.GetId().isEmpty())
+        {
+            SetData(picasso, newRandomEmployee, newRandomList, activity, employeeImgVws, resultVws);
+
+            resultVw.setBackgroundResource(0);
+
+            resultVw.setVisibility(View.GONE);
+        }
+
+        else
+            Toast.makeText(activity, activity.getText(R.string.randomizeEmployeesErrorMsg), Toast.LENGTH_LONG)
+                 .show();
     }
 }

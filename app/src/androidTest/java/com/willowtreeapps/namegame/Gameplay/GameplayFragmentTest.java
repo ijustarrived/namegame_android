@@ -47,7 +47,7 @@ public class GameplayFragmentTest
 
     //Must comment the error and placeholder options of the picasso load or this test might pass with erroneous results.
     @Test
-    public void VerifyIfImageWasLoadedAfterGameStartedTest()
+    public void VerifyIfImageWasLoadedAfterTimeModeStartedTest()
     {
         WaitForDataAndClickMode(R.id.timedModeBtn);
 
@@ -58,9 +58,32 @@ public class GameplayFragmentTest
     }
 
     @Test
-    public void VerifyIfEmployeeFullNameWasSetAfterGameLoadedTest()
+    public void VerifyIfImageWasLoadedAfterPracticeModeStartedTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        onView(withId(R.id.employeeImage)).check(matches(HasDrawable()));
+    }
+
+    @Test
+    public void VerifyIfEmployeeFullNameWasSetAfterTimeModeLoadedTest()
     {
         WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        ValidateRandomEmployeeFullName();
+
+        /*final EmployeeInfo RANDOM_EMPLOYEE = employeeViewModel.GetRandomEmployee();
+
+        onView(withId(R.id.employeeName)).check(matches(withText(String.format("%s %s", RANDOM_EMPLOYEE.GetFirstName(), RANDOM_EMPLOYEE.GetLastName()))));*/
+    }
+
+    @Test
+    public void VerifyIfEmployeeFullNameWasSetAfterPracticeModeLoadedTest()
+    {
+        WaitForDataAndClickMode(R.id.practiceModeBtn);
 
         final EmployeeInfo RANDOM_EMPLOYEE = employeeViewModel.GetRandomEmployee();
 
@@ -80,6 +103,21 @@ public class GameplayFragmentTest
         WaitToFinish();
 
         onView(withText(R.string.gameOverTitleTxt)).inRoot(isDialog()).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void LoseTimedGameAndVerifyDialogIsVisibleTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        ValidateGameOverInTimedMode();
+
+        /*WaitToFinish((int)GameplayFragment.TIMED_MODE_DURATION);
+
+        onView(withText(R.string.gameOverTitleTxt)).inRoot(isDialog()).check(matches(isDisplayed()));*/
     }
 
     @Test
@@ -112,7 +150,36 @@ public class GameplayFragmentTest
     }
 
     @Test
-    public void SelectCorrectAnswerInPracticeModeTest()
+    public void SelectIncorrectAnswerInTimedModeAndValidateIncorrectAnswerImageTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        onView
+                (
+                        withId
+                                (
+                                        GetResultVwResIdFromSelectedResId
+                                                (
+                                                        LoseGame
+                                                                (
+                                                                        employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee())
+                                                                )
+                                                )
+                                )
+                ).check
+                (
+                        matches
+                                (
+                                        HasBackground()
+                                )
+                );
+    }
+
+    @Test
+    public void ValidateNextRoundLoadsInPracticeModeTest()
     {
         WaitForDataAndClickMode(R.id.practiceModeBtn);
 
@@ -121,11 +188,24 @@ public class GameplayFragmentTest
 
         SelectCorrectAnswer(1);
 
-        onView(withText(R.string.gameOverTitleTxt)).check(doesNotExist());
+        ValidateRandomEmployeeFullName();
     }
 
     @Test
-    public void Select2CorrectAnswerInARowInPracticeModeTest()
+    public void ValidateNextRoundLoadsInTimedModeTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        SelectCorrectAnswer(1);
+
+        ValidateRandomEmployeeFullName();
+    }
+
+    @Test
+    public void Select2CorrectAnswerAndValidateNextRoundLoadsInPracticeModeTest()
     {
         WaitForDataAndClickMode(R.id.practiceModeBtn);
 
@@ -134,7 +214,20 @@ public class GameplayFragmentTest
 
         SelectCorrectAnswer(2);
 
-        onView(withText(R.string.gameOverTitleTxt)).check(doesNotExist());
+        ValidateRandomEmployeeFullName();
+    }
+
+    @Test
+    public void Select2CorrectAnswerAndValidateNextRoundLoadsInTimeModeTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        SelectCorrectAnswer(2);
+
+        ValidateRandomEmployeeFullName();
     }
 
     //This test will fail unless the delay of the answer handler, in the gameplay view model, is manually increased to 3000 or higher
@@ -191,6 +284,33 @@ public class GameplayFragmentTest
                 );
     }
 
+    //This test will fail unless the delay of the answer handler, in the gameplay view model, is manually increased to 3000 or higher
+    @Test
+    public void SelectCorrectAnswerAndValidateCorrectImageInTimedModeTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        onView
+                (
+                        withId
+                                (
+                                        GetResultVwResIdFromSelectedIndex
+                                                (
+                                                        SelectCorrectAnswer(1)
+                                                )
+                                )
+                ).check
+                (
+                        matches
+                                (
+                                        HasBackground()
+                                )
+                );
+    }
+
     @Test
     public void SelectCorrectAnswerAndLoseInPracticeModeTest()
     {
@@ -202,6 +322,19 @@ public class GameplayFragmentTest
         SelectCorrectAnswer(1);
 
         LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+    }
+
+    @Test
+    public void SelectCorrectAnswerAndLoseInTimedModeTest()
+    {
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        SelectCorrectAnswer(1);
+
+        WaitToFinish((int)GameplayFragment.TIMED_MODE_DURATION);
     }
 
     @Test
@@ -220,6 +353,14 @@ public class GameplayFragmentTest
     }
 
     @Test
+    public void ValidateGameOverScoreInTimedModeTest()
+    {
+        SelectCorrectAnswerAndLoseInTimedModeTest();
+
+        ValidateGameOverScore("1/1");
+    }
+
+    @Test
     public void NavigatesBackToMainMenuAfterGameOverFromPracticeModeTest()
     {
         WaitForDataAndClickMode(R.id.practiceModeBtn);
@@ -235,6 +376,14 @@ public class GameplayFragmentTest
     }
 
     @Test
+    public void NavigatesBackToMainMenuAfterGameOverFromTimedModeTest()
+    {
+        SelectCorrectAnswerAndLoseInTimedModeTest();
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
     public void ChangeToLandscapeAndLosePracticeModeAndReturnToMainMenuTest()
     {
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -245,6 +394,21 @@ public class GameplayFragmentTest
         WaitToFinish();
 
         LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
+
+        ReturnToMainMenuAndVerifyIsVisible(activity);
+    }
+
+    @Test
+    public void ChangeToLandscapeAndLoseTimedModeAndReturnToMainMenuTest()
+    {
+        ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        WaitForDataAndClickMode(R.id.timedModeBtn);
+
+        //Wait for picasso loader to finish
+        WaitToFinish();
+
+        WaitToFinish((int)GameplayFragment.TIMED_MODE_DURATION);
 
         ReturnToMainMenuAndVerifyIsVisible(activity);
     }
@@ -344,7 +508,7 @@ public class GameplayFragmentTest
 
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        VerifyIfEmployeeFullNameWasSetAfterGameLoadedTest();
+        VerifyIfEmployeeFullNameWasSetAfterPracticeModeLoadedTest();
     }
 
     @Test
@@ -363,7 +527,7 @@ public class GameplayFragmentTest
 
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        VerifyIfEmployeeFullNameWasSetAfterGameLoadedTest();
+        VerifyIfEmployeeFullNameWasSetAfterPracticeModeLoadedTest();
     }
 
     @Test
@@ -551,6 +715,19 @@ public class GameplayFragmentTest
         }
     }
 
+    private void WaitToFinish(int sleep)
+    {
+        try
+        {
+            Thread.sleep(sleep);
+        }
+
+        catch (InterruptedException e)
+        {
+            throw new AssertionError(e.getMessage());
+        }
+    }
+
     private void ChangeOrientationTo(MainActivity activity, int orientation)
     {
         activity.setRequestedOrientation(orientation);
@@ -626,6 +803,20 @@ public class GameplayFragmentTest
                                                 )
                                 )
                 );
+    }
+
+    private void ValidateRandomEmployeeFullName()
+    {
+        final EmployeeInfo RANDOM_EMPLOYEE = employeeViewModel.GetRandomEmployee();
+
+        onView(withId(R.id.employeeName)).check(matches(withText(String.format("%s %s", RANDOM_EMPLOYEE.GetFirstName(), RANDOM_EMPLOYEE.GetLastName()))));
+    }
+
+    private void ValidateGameOverInTimedMode()
+    {
+        WaitToFinish((int)GameplayFragment.TIMED_MODE_DURATION);
+
+        onView(withText(R.string.gameOverTitleTxt)).inRoot(isDialog()).check(matches(isDisplayed()));
     }
 
 }
