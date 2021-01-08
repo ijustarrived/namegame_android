@@ -27,6 +27,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.willowtreeapps.namegame.Gameplay.ViewBackgroundMatcher.HasBackground;
 import static com.willowtreeapps.namegame.Gameplay.ImageViewDrawableMatcher.HasDrawable;
 
+/*
+If you run them all, some of the test might fail because the thread sleep needs more time.
+
+THESE TEST WERE CREATED BEFORE THE MUSIC AND SFX WERE ADDED. IF SOME FAIL, IT'S JUST A MATTER OF ADDING MORE TIME TO THE SLEEPS
+ */
 public class GameplayFragmentTest
 {
     @Rule

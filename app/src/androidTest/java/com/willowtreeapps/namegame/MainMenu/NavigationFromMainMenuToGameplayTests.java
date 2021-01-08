@@ -20,7 +20,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
 
-//If you run them all, some of the landscape and back to portrait test might fail because the thread sleep needs a bit more time
+/*
+If you run them all, some of the landscape and back to portrait test might fail because the thread sleep needs more time.
+
+THESE TEST WERE CREATED BEFORE THE MUSIC AND SFX WERE ADDED. IF SOME FAIL IT'S JUST A MATTER OF ADDING MORE TIME TO THE SLEEPS
+ */
 public class NavigationFromMainMenuToGameplayTests
 {
     @Rule

@@ -68,8 +68,6 @@ public class APITests
             {
                 try
                 {
-                    //assertEquals(6 ,mainMenuViewModel.GenerateNewRandomListOf6(employeeInfos, null).size());
-
                     assertEquals(6, employeeViewModel.GenerateNewRandomListOf6(employeeInfos, ListRandomizerInstance.GetInstance(null)).size());
                 }
 

@@ -234,10 +234,6 @@ public class GameplayFragment extends Fragment
                 }
 
                 break;
-
-            default:
-
-                break;
         }
 
         SetData(Picasso.get(), employeeViewModel.GetRandomEmployee(), employeeViewModel.GetRandomListOf6(), currentActivity, employeeImgVws, resultImgVws);
@@ -283,7 +279,7 @@ public class GameplayFragment extends Fragment
                     //Correct answer
                     if(employeeImgVws.get(CORRECT_EMPLOYEE_INDEX).getId() == view.getId())
                     {
-                        //soundPoolViewModel.
+                        soundPoolViewModel.Play(R.raw.correct_sfx, 0);
 
                         correctCounter++;
 
@@ -303,6 +299,8 @@ public class GameplayFragment extends Fragment
                     //Incorrect answer
                     else
                     {
+                        soundPoolViewModel.Play(R.raw.wrong_sfx, 0);
+
                         RESULT_VW.setBackgroundResource(R.drawable.incorrect_vector);
 
                         waitForAnswerHandler.postDelayed(new Runnable()
@@ -341,6 +339,8 @@ public class GameplayFragment extends Fragment
 
     private void CreateGameOverDialog(FragmentActivity activity)
     {
+        mediaPlayerViewModel.Reset();
+
         final String ALERT_MSG = activity.getText(R.string.gameOverBodyTxt).toString();
 
         alertDialog = new AlertDialog.Builder(activity)
@@ -413,31 +413,28 @@ public class GameplayFragment extends Fragment
     {
         super.onResume();
 
-        if(mediaPlayerViewModel.IsReleased())
+        switch (gameplayMode)
         {
-            switch (gameplayMode)
-            {
-                case GameplayDef.Mode.PRACTICE:
+            case GameplayDef.Mode.PRACTICE:
 
-                    break;
+                //Play it on this switch instead of the one on the oncreate because I know this will always be called even after onpause
+                mediaPlayerViewModel.PlayNewTrack(true, R.raw.practice_mode_song, currentActivity, AudioManager.STREAM_MUSIC);
 
-                case GameplayDef.Mode.TIMED:
+                break;
 
-                    //Restart a new countdown if the app was brought back to life after going to the background
-                    if(progressBar.getProgress() < 100 && progressBar.getProgress() != 0)
-                    {
-                        countDownTimer = GetNewCountDownTimer(gameplayViewModel.getTimeModeDuration(), TIME_MODE_TICK_INTERVAL);
+            case GameplayDef.Mode.TIMED:
 
-                        countDownTimer.start();
-                    }
+                //Restart a new countdown if the app was brought back to life after going to the background
+                if(progressBar.getProgress() < 100 && progressBar.getProgress() != 0)
+                {
+                    countDownTimer = GetNewCountDownTimer(gameplayViewModel.getTimeModeDuration(), TIME_MODE_TICK_INTERVAL);
 
-                    break;
+                    countDownTimer.start();
+                }
 
-                default:
-
-                    break;
-            }
+                break;
         }
+
     }
 
     @Override
