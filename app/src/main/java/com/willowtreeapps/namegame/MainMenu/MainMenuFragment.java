@@ -183,12 +183,18 @@ public class MainMenuFragment extends Fragment
     }
 
     @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        mediaPlayerViewModel.Release();
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
 
-        soundPoolViewModel.Release();
-
-        mediaPlayerViewModel.Release();
+        //soundPoolViewModel.Release();
     }
 }

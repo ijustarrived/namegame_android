@@ -3,6 +3,7 @@ package com.willowtreeapps.namegame.Gameplay;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -29,6 +30,7 @@ import com.willowtreeapps.namegame.Gameplay.Pojo.GameplayViewModel;
 import com.willowtreeapps.namegame.Gameplay.Pojo.HeadshotInfo;
 import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeViewModel;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
+import com.willowtreeapps.namegame.MainMenu.Pojo.MediaPlayerViewModel;
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.MainMenu.MainMenuFragment;
 import com.willowtreeapps.namegame.core.NameGameApplication;
@@ -59,6 +61,8 @@ public class GameplayFragment extends Fragment
     private MainMenuViewModel mainMenuViewModel;
 
     private GameplayViewModel gameplayViewModel;
+
+    private MediaPlayerViewModel mediaPlayerViewModel;
 
     private ProgressBar progressBar;
 
@@ -100,6 +104,8 @@ public class GameplayFragment extends Fragment
         employeeViewModel = NameGameApplication.get(currentActivity).GetEmployeeViewModel();
 
         gameplayViewModel = NameGameApplication.get(currentActivity).GetGameplayViewModel();
+
+        mediaPlayerViewModel = NameGameApplication.get(currentActivity).GetMediaPlayerViewModel();
 
         //region Get all Views
 
@@ -152,6 +158,10 @@ public class GameplayFragment extends Fragment
             @Override
             public void onClick(View view)
             {
+                mediaPlayerViewModel.Release();
+
+                countDownTimer.cancel();
+
                 currentActivity.onBackPressed();
             }
         });
@@ -213,12 +223,17 @@ public class GameplayFragment extends Fragment
                 //The only instance the progress will be 0 is if the orientation changed while it's game over
                 if(progressBar.getProgress() > 0)
                 {
+                    mediaPlayerViewModel.PlayNewTrack(true, R.raw.timer_slow_sfx, currentActivity, AudioManager.STREAM_MUSIC);
+
                     countDownTimer = new CountDownTimer(countdownDuration, TIME_MODE_TICK_INTERVAL)
                     {
                         @Override
                         public void onTick(long l)
                         {
                             gameplayViewModel.setTimeModeDuration(l);
+
+                            if(progressBar.getProgress() < 70)
+                                mediaPlayerViewModel.PlayNewTrack(true, R.raw.timer_fast_sfx, currentActivity, AudioManager.STREAM_MUSIC);
 
                             //1.0 * l = converts to floating point value. *100 = converts decimal value to an integer value.
                             progressBar.setProgress((int) (((1.0 * l) / countdownDuration) * 100));
@@ -228,6 +243,8 @@ public class GameplayFragment extends Fragment
                         public void onFinish()
                         {
                             progressBar.setProgress(0);
+
+                            mediaPlayerViewModel.Reset();
 
                             if (alertDialog == null)
                                 CreateGameOverDialog(currentActivity);

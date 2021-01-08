@@ -24,9 +24,12 @@ public class MediaPlayerRepository
 
     public void Release()
     {
-        mediaPlayer.release();
+        if(mediaPlayer != null)
+        {
+            mediaPlayer.release();
 
-        mediaPlayer = null;
+            mediaPlayer = null;
+        }
     }
 
     public void SetOnCompleteListener(MediaPlayer.OnCompletionListener onCompletionListener)
@@ -37,5 +40,11 @@ public class MediaPlayerRepository
     public boolean IsReleased()
     {
         return mediaPlayer == null;
+    }
+
+    public void Reset()
+    {
+        if(mediaPlayer != null)
+            mediaPlayer.reset();
     }
 }

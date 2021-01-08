@@ -36,6 +36,10 @@ public class MediaPlayerViewModel extends ViewModel
 
     public void PlayNewTrack(boolean looping, @RawRes int resId, Context context, int streamType)
     {
+        //This is null on app launched
+        if(mediaPlayerRepository != null)
+            Reset();
+
         Create(looping, resId, context, streamType);
 
         Start();
@@ -49,5 +53,10 @@ public class MediaPlayerViewModel extends ViewModel
     public boolean IsReleased()
     {
         return mediaPlayerRepository.IsReleased();
+    }
+
+    public void Reset()
+    {
+        mediaPlayerRepository.Reset();
     }
 }
