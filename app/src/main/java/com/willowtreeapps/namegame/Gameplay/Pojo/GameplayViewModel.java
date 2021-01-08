@@ -6,12 +6,12 @@ public class GameplayViewModel extends ViewModel
 {
     private long timeModeDuration;
 
-    public long getTimeModeDuration()
+    public long GetTimeModeDuration()
     {
         return timeModeDuration;
     }
 
-    public void setTimeModeDuration(long timeModeDuration)
+    public void SetTimeModeDuration(long timeModeDuration)
     {
         this.timeModeDuration = timeModeDuration;
     }

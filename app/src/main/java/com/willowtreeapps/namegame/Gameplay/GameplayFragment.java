@@ -74,8 +74,6 @@ public class GameplayFragment extends Fragment
     private static final long DEFAULT_TIMED_MODE_DURATION = 30000,
     TIME_MODE_TICK_INTERVAL = 1000;
 
-    private long countdownDuration = 0;
-
     private CountDownTimer countDownTimer;
 
     public static GameplayFragment newInstance(Bundle args)
@@ -207,7 +205,7 @@ public class GameplayFragment extends Fragment
         }
 
         else
-            gameplayViewModel.setTimeModeDuration(DEFAULT_TIMED_MODE_DURATION);
+            gameplayViewModel.SetTimeModeDuration(DEFAULT_TIMED_MODE_DURATION);
 
         switch (gameplayMode)
         {
@@ -221,8 +219,6 @@ public class GameplayFragment extends Fragment
             case GameplayDef.Mode.TIMED:
 
                 progressBar.setVisibility(View.VISIBLE);
-
-                countdownDuration = gameplayViewModel.getTimeModeDuration();
 
                 TOOLBAR.setTitle(currentActivity.getResources()
                                                 .getText(R.string.timedModeBtnTxt));
@@ -347,7 +343,7 @@ public class GameplayFragment extends Fragment
                     {
                         soundPoolViewModel.Play(R.raw.btn_sfx, 0);
 
-                        gameplayViewModel.setTimeModeDuration(DEFAULT_TIMED_MODE_DURATION);
+                        gameplayViewModel.SetTimeModeDuration(DEFAULT_TIMED_MODE_DURATION);
 
                         activity.onBackPressed();
                     }
@@ -423,7 +419,7 @@ public class GameplayFragment extends Fragment
                 //Create a new countdown if the mode wasn't done.
                 if(progressBar.getProgress() > 0)
                 {
-                    countDownTimer = GetNewCountDownTimer(gameplayViewModel.getTimeModeDuration(), TIME_MODE_TICK_INTERVAL);
+                    countDownTimer = GetNewCountDownTimer(gameplayViewModel.GetTimeModeDuration(), TIME_MODE_TICK_INTERVAL);
 
                     countDownTimer.start();
                 }
@@ -454,10 +450,10 @@ public class GameplayFragment extends Fragment
                 else if(progressBar.getProgress() < 30 && (mediaPlayerViewModel.GetCurrentTrackId() != R.raw.timer_fast_sfx))
                     mediaPlayerViewModel.PlayNewTrack(true, R.raw.timer_fast_sfx, currentActivity, AudioManager.STREAM_MUSIC);
 
-                gameplayViewModel.setTimeModeDuration(l);
+                gameplayViewModel.SetTimeModeDuration(l);
 
                 //1.0 * l = converts to floating point value. *100 = converts decimal value to an integer value.
-                progressBar.setProgress((int) (((1.0 * l) / countdownDuration) * 100));
+                progressBar.setProgress((int) (((1.0 * l) / DEFAULT_TIMED_MODE_DURATION) * 100));
             }
 
             @Override

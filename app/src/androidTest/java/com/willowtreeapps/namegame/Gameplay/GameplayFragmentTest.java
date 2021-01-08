@@ -336,7 +336,7 @@ public class GameplayFragmentTest
 
         SelectCorrectAnswer(1);
 
-        WaitToFinish((int)gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int)gameplayViewModel.GetTimeModeDuration());
     }
 
     @Test
@@ -410,7 +410,7 @@ public class GameplayFragmentTest
         //Wait for picasso loader to finish
         WaitToFinish();
 
-        WaitToFinish((int)gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int)gameplayViewModel.GetTimeModeDuration());
 
         ReturnToMainMenuAndVerifyIsVisible(activity);
     }
@@ -440,7 +440,7 @@ public class GameplayFragmentTest
 
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int) gameplayViewModel.GetTimeModeDuration());
 
         ReturnToMainMenuAndVerifyIsVisible(activity);
     }
@@ -474,7 +474,7 @@ public class GameplayFragmentTest
         //Wait for picasso loader to finish
         WaitToFinish();
 
-        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int) gameplayViewModel.GetTimeModeDuration());
 
         ReturnToMainMenuAndVerifyIsVisible(activity);
     }
@@ -508,7 +508,7 @@ public class GameplayFragmentTest
 
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int) gameplayViewModel.GetTimeModeDuration());
 
         ReturnToMainMenuAndVerifyIsVisible(activity);
     }
@@ -536,7 +536,7 @@ public class GameplayFragmentTest
         //Wait for picasso loader to finish
         WaitToFinish();
 
-        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int) gameplayViewModel.GetTimeModeDuration());
 
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
@@ -572,7 +572,7 @@ public class GameplayFragmentTest
         //Wait for picasso loader to finish
         WaitToFinish();
 
-        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int) gameplayViewModel.GetTimeModeDuration());
 
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
@@ -605,7 +605,7 @@ public class GameplayFragmentTest
         //Wait for picasso loader to finish
         WaitToFinish();
 
-        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int) gameplayViewModel.GetTimeModeDuration());
 
         ReturnToMainMenu(activity);
 
@@ -641,7 +641,7 @@ public class GameplayFragmentTest
         //Wait for picasso loader to finish
         WaitToFinish();
 
-        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int) gameplayViewModel.GetTimeModeDuration());
 
         ReturnToMainMenu(activity);
 
@@ -681,7 +681,7 @@ public class GameplayFragmentTest
 
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int) gameplayViewModel.GetTimeModeDuration());
 
         ValidateGameOverScore("1/1");
     }
@@ -719,7 +719,7 @@ public class GameplayFragmentTest
 
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        WaitToFinish((int) gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int) gameplayViewModel.GetTimeModeDuration());
 
         ValidateGameOverScore("1/1");
     }
@@ -972,7 +972,7 @@ public class GameplayFragmentTest
 
     private void ValidateGameOverInTimedMode()
     {
-        WaitToFinish((int)gameplayViewModel.getTimeModeDuration());
+        WaitToFinish((int)gameplayViewModel.GetTimeModeDuration());
 
         onView(withText(R.string.gameOverTitleTxt)).inRoot(isDialog()).check(matches(isDisplayed()));
     }
