@@ -553,7 +553,11 @@ public class GameplayFragmentTest
 
         LoseGame(employeeViewModel.GetRandomListOf6().indexOf(employeeViewModel.GetRandomEmployee()));
 
+        WaitToFinish();
+
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        WaitToFinish();
 
         ChangeOrientationTo(activity, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -905,7 +909,7 @@ public class GameplayFragmentTest
 
         onView(withId(ALERT_DIALOG_BTN_ID)).perform(click());
 
-        WaitToFinish();
+        WaitToFinish(2000);
 
         onView(withId(R.id.practiceModeBtn)).check(matches(isDisplayed()));
     }
