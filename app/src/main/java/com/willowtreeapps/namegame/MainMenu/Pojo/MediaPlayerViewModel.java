@@ -64,4 +64,9 @@ public class MediaPlayerViewModel extends ViewModel
     {
         return mediaPlayerRepository.IsPlaying();
     }
+
+    public int GetCurrentTrackId()
+    {
+        return mediaPlayerRepository.GetCurrentTrackId();
+    }
 }

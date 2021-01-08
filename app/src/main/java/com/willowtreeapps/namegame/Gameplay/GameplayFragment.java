@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -71,7 +72,7 @@ public class GameplayFragment extends Fragment
 
     private static final short ANSWER_HANDLER_DELAY = 1000;
 
-    private static final long DEFAULT_TIMED_MODE_DURATION = /*30000*/ 5000,
+    private static final long DEFAULT_TIMED_MODE_DURATION = 30000,
     TIME_MODE_TICK_INTERVAL = 1000;
 
     private long countdownDuration = 0;
@@ -165,7 +166,9 @@ public class GameplayFragment extends Fragment
             {
                 mediaPlayerViewModel.Release();
 
-                countDownTimer.cancel();
+                //== null if it's practice mode
+                if(countDownTimer != null)
+                    countDownTimer.cancel();
 
                 currentActivity.onBackPressed();
             }
@@ -351,6 +354,8 @@ public class GameplayFragment extends Fragment
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
+                        soundPoolViewModel.Play(R.raw.btn_sfx, 0);
+
                         gameplayViewModel.setTimeModeDuration(DEFAULT_TIMED_MODE_DURATION);
 
                         activity.onBackPressed();
@@ -452,10 +457,10 @@ public class GameplayFragment extends Fragment
             @Override
             public void onTick(long l)
             {
-                if(mediaPlayerViewModel.IsReleased() && progressBar.getProgress() > 70)
+                if(mediaPlayerViewModel.IsReleased() && progressBar.getProgress() > 30)
                     mediaPlayerViewModel.PlayNewTrack(true, R.raw.timer_slow_sfx, currentActivity, AudioManager.STREAM_MUSIC);
 
-                else if(progressBar.getProgress() < 70)
+                else if(progressBar.getProgress() < 30 && (mediaPlayerViewModel.GetCurrentTrackId() != R.raw.timer_fast_sfx))
                     mediaPlayerViewModel.PlayNewTrack(true, R.raw.timer_fast_sfx, currentActivity, AudioManager.STREAM_MUSIC);
 
                 gameplayViewModel.setTimeModeDuration(l);

@@ -1,6 +1,7 @@
 package com.willowtreeapps.namegame.MainMenu;
 
 import android.content.Context;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -101,6 +102,8 @@ public class MainMenuFragment extends Fragment
             {
                 mediaPlayerViewModel.Release();
 
+                soundPoolViewModel.Play(R.raw.btn_sfx, 0);
+
                 if(!employeeViewModel.GetAllEmployees().isEmpty())
                 {
                     if(!employeeViewModel.GetRandomListOf6().isEmpty())
@@ -125,6 +128,8 @@ public class MainMenuFragment extends Fragment
             public void onClick(View view)
             {
                 mediaPlayerViewModel.Release();
+
+                soundPoolViewModel.Play(R.raw.btn_sfx, 0);
 
                 if(!employeeViewModel.GetAllEmployees().isEmpty())
                 {
@@ -176,8 +181,7 @@ public class MainMenuFragment extends Fragment
     {
         super.onResume();
 
-        //soundPoolViewModel.Play(R.raw.timer_fast_sfx, -1);
-
+        //The only time this will be true is when the app was sent to the background and brought back
         if(mediaPlayerViewModel.IsReleased())
             mediaPlayerViewModel.PlayNewTrack(true, R.raw.name_game_song, context, AudioManager.STREAM_MUSIC);
     }
@@ -194,7 +198,5 @@ public class MainMenuFragment extends Fragment
     public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
-
-        //soundPoolViewModel.Release();
     }
 }

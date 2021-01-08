@@ -2,7 +2,6 @@ package com.willowtreeapps.namegame.MainMenu.Repository;
 
 import android.content.Context;
 import android.media.SoundPool;
-import android.util.Log;
 
 import androidx.annotation.RawRes;
 
@@ -20,7 +19,7 @@ public class SoundPoolRepository
 
     public SoundPoolRepository(List<Integer> soundIds, int usage, int contentType, Context context)
     {
-        soundPool = SoundPoolInstance.GetInstance(soundIds.size(), usage, contentType);
+        soundPool = SoundPoolInstance.Create(soundIds.size(), usage, contentType);
 
         this.soundIds = soundIds;
 
@@ -39,8 +38,11 @@ public class SoundPoolRepository
 
     public void Release()
     {
-        soundPool.release();
+        if(soundPool != null)
+        {
+            soundPool.release();
 
-        soundPool = null;
+            soundPool = null;
+        }
     }
 }

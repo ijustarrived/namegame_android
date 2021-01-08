@@ -5,25 +5,16 @@ import android.media.SoundPool;
 
 public class SoundPoolInstance
 {
-    private static SoundPool soundPool;
-
-    public static synchronized SoundPool GetInstance(int maxStreams, int usage, int contentType)
+    public static SoundPool Create(int maxStreams, int usage, int contentType)
     {
-        if(soundPool == null)
-        {
-            final AudioAttributes AUDIO_ATTRIBUTES = new AudioAttributes.Builder()
-                    .setUsage(usage)
-                    .setContentType(contentType)
-                //.setUsage(AudioAttributes.USAGE_GAME)
-                //.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build();
+        final AudioAttributes AUDIO_ATTRIBUTES = new AudioAttributes.Builder()
+                .setUsage(usage)
+                .setContentType(contentType)
+                .build();
 
-            soundPool = new SoundPool.Builder()
-                    .setMaxStreams(maxStreams)
-                    .setAudioAttributes(AUDIO_ATTRIBUTES)
-                    .build();
-        }
-
-        return soundPool;
+        return new SoundPool.Builder()
+                .setMaxStreams(maxStreams)
+                .setAudioAttributes(AUDIO_ATTRIBUTES)
+                .build();
     }
 }

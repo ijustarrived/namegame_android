@@ -11,9 +11,13 @@ public class MediaPlayerRepository
 {
     private MediaPlayer mediaPlayer;
 
+    private int currentSongId;
+
     public MediaPlayerRepository(boolean looping, @RawRes int resId, Context context, int streamType)
     {
         mediaPlayer = MediaPlayerInstance.Create(looping, resId, context, streamType);
+
+        currentSongId = resId;
     }
 
     public void Start()
@@ -51,5 +55,10 @@ public class MediaPlayerRepository
     public boolean IsPlaying()
     {
         return mediaPlayer.isPlaying();
+    }
+
+    public int GetCurrentTrackId()
+    {
+        return currentSongId;
     }
 }
