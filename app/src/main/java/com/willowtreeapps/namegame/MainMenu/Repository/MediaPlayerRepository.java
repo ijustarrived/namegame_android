@@ -1,0 +1,41 @@
+package com.willowtreeapps.namegame.MainMenu.Repository;
+
+import android.content.Context;
+import android.media.MediaPlayer;
+
+import androidx.annotation.RawRes;
+
+import com.willowtreeapps.namegame.MainMenu.Singleton.MediaPlayerInstance;
+
+public class MediaPlayerRepository
+{
+    private MediaPlayer mediaPlayer;
+
+    public MediaPlayerRepository(boolean looping, @RawRes int resId, Context context, int streamType)
+    {
+        mediaPlayer = MediaPlayerInstance.Create(looping, resId, context, streamType);
+    }
+
+    public void Start()
+    {
+        if(mediaPlayer != null)
+            mediaPlayer.start();
+    }
+
+    public void Release()
+    {
+        mediaPlayer.release();
+
+        mediaPlayer = null;
+    }
+
+    public void SetOnCompleteListener(MediaPlayer.OnCompletionListener onCompletionListener)
+    {
+        mediaPlayer.setOnCompletionListener(onCompletionListener);
+    }
+
+    public boolean IsReleased()
+    {
+        return mediaPlayer == null;
+    }
+}
