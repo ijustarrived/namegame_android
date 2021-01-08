@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -228,14 +227,6 @@ public class GameplayFragment extends Fragment
                 TOOLBAR.setTitle(currentActivity.getResources()
                                                 .getText(R.string.timedModeBtnTxt));
 
-                //The only instance the progress will be 0 is if the orientation changed while it's game over
-                if(progressBar.getProgress() > 0)
-                {
-                    countDownTimer = GetNewCountDownTimer(countdownDuration, TIME_MODE_TICK_INTERVAL);
-
-                    countDownTimer.start();
-                }
-
                 break;
         }
 
@@ -429,8 +420,8 @@ public class GameplayFragment extends Fragment
 
             case GameplayDef.Mode.TIMED:
 
-                //Restart a new countdown if the app was brought back to life after going to the background
-                if(progressBar.getProgress() < 100 && progressBar.getProgress() != 0)
+                //Create a new countdown if the mode wasn't done.
+                if(progressBar.getProgress() > 0)
                 {
                     countDownTimer = GetNewCountDownTimer(gameplayViewModel.getTimeModeDuration(), TIME_MODE_TICK_INTERVAL);
 
