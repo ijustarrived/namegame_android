@@ -31,6 +31,7 @@ import com.willowtreeapps.namegame.Gameplay.Pojo.HeadshotInfo;
 import com.willowtreeapps.namegame.MainMenu.Pojo.EmployeeViewModel;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MainMenuViewModel;
 import com.willowtreeapps.namegame.MainMenu.Pojo.MediaPlayerViewModel;
+import com.willowtreeapps.namegame.MainMenu.Pojo.SoundPoolViewModel;
 import com.willowtreeapps.namegame.R;
 import com.willowtreeapps.namegame.MainMenu.MainMenuFragment;
 import com.willowtreeapps.namegame.core.NameGameApplication;
@@ -63,6 +64,8 @@ public class GameplayFragment extends Fragment
     private GameplayViewModel gameplayViewModel;
 
     private MediaPlayerViewModel mediaPlayerViewModel;
+
+    private SoundPoolViewModel soundPoolViewModel;
 
     private ProgressBar progressBar;
 
@@ -106,6 +109,8 @@ public class GameplayFragment extends Fragment
         gameplayViewModel = NameGameApplication.get(currentActivity).GetGameplayViewModel();
 
         mediaPlayerViewModel = NameGameApplication.get(currentActivity).GetMediaPlayerViewModel();
+
+        soundPoolViewModel = NameGameApplication.get(currentActivity).GetSoundPoolViewModel();
 
         //region Get all Views
 
@@ -223,35 +228,7 @@ public class GameplayFragment extends Fragment
                 //The only instance the progress will be 0 is if the orientation changed while it's game over
                 if(progressBar.getProgress() > 0)
                 {
-                    mediaPlayerViewModel.PlayNewTrack(true, R.raw.timer_slow_sfx, currentActivity, AudioManager.STREAM_MUSIC);
-
-                    countDownTimer = new CountDownTimer(countdownDuration, TIME_MODE_TICK_INTERVAL)
-                    {
-                        @Override
-                        public void onTick(long l)
-                        {
-                            gameplayViewModel.setTimeModeDuration(l);
-
-                            if(progressBar.getProgress() < 70)
-                                mediaPlayerViewModel.PlayNewTrack(true, R.raw.timer_fast_sfx, currentActivity, AudioManager.STREAM_MUSIC);
-
-                            //1.0 * l = converts to floating point value. *100 = converts decimal value to an integer value.
-                            progressBar.setProgress((int) (((1.0 * l) / countdownDuration) * 100));
-                        }
-
-                        @Override
-                        public void onFinish()
-                        {
-                            progressBar.setProgress(0);
-
-                            mediaPlayerViewModel.Reset();
-
-                            if (alertDialog == null)
-                                CreateGameOverDialog(currentActivity);
-
-                            alertDialog.show();
-                        }
-                    };
+                    countDownTimer = GetNewCountDownTimer(countdownDuration, TIME_MODE_TICK_INTERVAL);
 
                     countDownTimer.start();
                 }
@@ -306,6 +283,8 @@ public class GameplayFragment extends Fragment
                     //Correct answer
                     if(employeeImgVws.get(CORRECT_EMPLOYEE_INDEX).getId() == view.getId())
                     {
+                        //soundPoolViewModel.
+
                         correctCounter++;
 
                         RESULT_VW.setBackgroundResource(R.drawable.correct_vector);
@@ -427,5 +406,79 @@ public class GameplayFragment extends Fragment
         else
             Toast.makeText(activity, activity.getText(R.string.randomizeEmployeesErrorMsg), Toast.LENGTH_LONG)
                  .show();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        if(mediaPlayerViewModel.IsReleased())
+        {
+            switch (gameplayMode)
+            {
+                case GameplayDef.Mode.PRACTICE:
+
+                    break;
+
+                case GameplayDef.Mode.TIMED:
+
+                    //Restart a new countdown if the app was brought back to life after going to the background
+                    if(progressBar.getProgress() < 100 && progressBar.getProgress() != 0)
+                    {
+                        countDownTimer = GetNewCountDownTimer(gameplayViewModel.getTimeModeDuration(), TIME_MODE_TICK_INTERVAL);
+
+                        countDownTimer.start();
+                    }
+
+                    break;
+
+                default:
+
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        mediaPlayerViewModel.Release();
+    }
+
+    private CountDownTimer GetNewCountDownTimer(long duration, long tickInterval)
+    {
+        return new CountDownTimer(duration, tickInterval)
+        {
+            @Override
+            public void onTick(long l)
+            {
+                if(mediaPlayerViewModel.IsReleased() && progressBar.getProgress() > 70)
+                    mediaPlayerViewModel.PlayNewTrack(true, R.raw.timer_slow_sfx, currentActivity, AudioManager.STREAM_MUSIC);
+
+                else if(progressBar.getProgress() < 70)
+                    mediaPlayerViewModel.PlayNewTrack(true, R.raw.timer_fast_sfx, currentActivity, AudioManager.STREAM_MUSIC);
+
+                gameplayViewModel.setTimeModeDuration(l);
+
+                //1.0 * l = converts to floating point value. *100 = converts decimal value to an integer value.
+                progressBar.setProgress((int) (((1.0 * l) / countdownDuration) * 100));
+            }
+
+            @Override
+            public void onFinish()
+            {
+                progressBar.setProgress(0);
+
+                mediaPlayerViewModel.Reset();
+
+                if (alertDialog == null)
+                    CreateGameOverDialog(currentActivity);
+
+                alertDialog.show();
+            }
+        };
     }
 }

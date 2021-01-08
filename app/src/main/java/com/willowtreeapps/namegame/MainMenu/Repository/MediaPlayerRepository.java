@@ -47,4 +47,9 @@ public class MediaPlayerRepository
         if(mediaPlayer != null)
             mediaPlayer.reset();
     }
+
+    public boolean IsPlaying()
+    {
+        return mediaPlayer.isPlaying();
+    }
 }

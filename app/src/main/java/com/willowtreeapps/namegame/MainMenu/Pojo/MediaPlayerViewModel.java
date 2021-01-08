@@ -59,4 +59,9 @@ public class MediaPlayerViewModel extends ViewModel
     {
         mediaPlayerRepository.Reset();
     }
+
+    public boolean IsPlaying()
+    {
+        return mediaPlayerRepository.IsPlaying();
+    }
 }

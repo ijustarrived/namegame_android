@@ -64,7 +64,7 @@ public class NameGameApplication extends Application {
         super.onCreate();
         component = buildComponent();
 
-        soundIds = Arrays.asList(R.raw.correct_sfx, R.raw.intro_sfx, R.raw.time_up_sfx, R.raw.wrong_sfx, R.raw.timer_slow_sfx, R.raw.timer_fast_sfx);
+        soundIds = Arrays.asList(R.raw.correct_sfx, R.raw.time_up_sfx, R.raw.wrong_sfx);
     }
 
     public ApplicationComponent component() {
